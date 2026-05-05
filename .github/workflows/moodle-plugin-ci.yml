@@ -95,4 +95,4 @@ jobs:
 
       - name: Javascript Lint
         if: ${{ always() }}
-        run: moodle-plugin-ci grunt --component report_individualized
+        run: moodle-plugin-ci grunt
