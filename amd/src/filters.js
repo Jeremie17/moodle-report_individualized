@@ -35,6 +35,8 @@ define([
 
     'use strict';
 
+    var isUpdatingSelects = false;
+
     /**
      * Rebuild a <select> element with a new list of options.
      * Restores the previously selected value if it still exists in the new list.
@@ -57,7 +59,7 @@ define([
             select.appendChild(el);
         });
         isUpdatingSelects = false;
-    };
+    }
 
     /**
      * Refresh the report content via the Moodle fragment API.
@@ -136,7 +138,7 @@ define([
             return;
         }
         pdfBtn.style.display = '';
-        
+
         try {
             const url = new URL(pdfBtn.href, window.location.origin);
             url.searchParams.set('userid', params.userid);
@@ -177,8 +179,6 @@ define([
         }
 
         // Valeur initiale du filtre catégorie transmise par PHP.
-        let currentCategoryId = parseInt(categoryid) || 0;
-        let isUpdatingSelects = false;
 
         /**
          * Déclenché à chaque changement de filtre.
@@ -197,7 +197,7 @@ define([
                 categorySelect, userSelect, courseSelect,
                 null
             );
-        };
+        }
 
         // --- Catégorie change ---
         categorySelect.addEventListener('change', handleChange);
@@ -230,7 +230,6 @@ define([
                 handleChange();
             });
         }
-    };
-
+    }
     return { init };
 });
