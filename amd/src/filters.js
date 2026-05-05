@@ -43,7 +43,6 @@ define([
      * @param {Array}             options    Array of {id, name} objects.
      * @param {number}            selectedId Value to restore after rebuild.
      */
-
     function updateSelect(select, options, selectedId) {
         isUpdatingSelects = true;
         select.innerHTML = '';
