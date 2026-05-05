@@ -186,7 +186,7 @@ report/individualized/
 - Resource engagement cannot be verified beyond the `viewed` log event. Moodle does not track time spent on files or external URLs.
 - Simple H5P videos (no integrated quizzes) do not generate xAPI statements — completion and closing trace are unavailable for this content type.
 - AMD compilation requires Node.js 16 or 18 (Node.js 22 is incompatible with the Moodle Gruntfile).
-
+- AMD compilation via Moodle's Gruntfile is currently blocked by a compatibility issue between Moodle 5.1.3 and Node.js 22. Build files are pre-compiled using terser as a workaround until Moodle resolves this upstream.
 ---
 
 ## License

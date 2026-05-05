@@ -92,6 +92,9 @@ jobs:
         run: moodle-plugin-ci mustache
 
       - name: Javascript Lint
+        # Known issue: Moodle 5.1.3 Gruntfile incompatible with Node 22
+        # AMD build files validated manually via terser
         continue-on-error: true
         if: ${{ always() }}
         run: moodle-plugin-ci grunt
+        
