@@ -26,25 +26,15 @@ namespace report_individualized\util;
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Computes and renders summary metrics (bandeaux récapitulatifs) for the report.
- *
- * Used at two levels :
- *  - Per section : called with section resources/activities.
- *  - Per course (global) : called with all resources/activities of the course.
- *
- * Five metrics :
- *  1. Durée estimée prof (via duration_util)
- *  2. Durée déclarée étudiant (sum of TIME feedbacks)
- *  3. Taux de complétion (completed activities / total)
- *  4. Note moyenne (average finalgrade / grademax across graded activities)
- *  5. Ressources consultées (resources with at least one view)
- */
-
 use html_writer;
 
-class summary_util
-{
+/**
+ * Utility class for computing and rendering summary metrics.
+ *
+ * Computes five metrics : estimated duration, student declared duration,
+ * completion rate, average grade, and resources viewed.
+ */
+class summary_util {
     /**
      * Computes all 5 summary metrics for a set of resources and activities.
      *
