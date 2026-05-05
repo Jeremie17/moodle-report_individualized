@@ -1,6 +1,7 @@
 .php-cs-fixer.cache
 .php-cs-fixer.dist.php
 *.log
+amd/build/
 *.tar.gz
 composer.json
 vendor/
