@@ -189,7 +189,6 @@ define([
                 return;
             }
             const params = getParams(categorySelect, userSelect, courseSelect, dateFrom, dateTo);
-            currentCategoryId = params.categoryid;
             updatePdfUrl(params);
             refreshReport(contextid, container, params);
             refreshFilters(
