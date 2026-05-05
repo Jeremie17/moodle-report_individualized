@@ -182,8 +182,10 @@ class category_util {
                 continue;
             }
 
-            if ($cat->id === $target->id
-                || strpos($cat->path, $target->path . '/') === 0) {
+            if (
+                $cat->id === $target->id
+                || strpos($cat->path, $target->path . '/') === 0
+            ) {
                 $filtered[] = $course;
             }
         }

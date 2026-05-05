@@ -59,8 +59,7 @@ class report_fragment
      * }
      * @return string HTML du rapport.
      */
-    public static function render(array $args): string
-    {
+    public static function render(array $args): string {
         global $DB, $OUTPUT, $CFG;
         require_once($CFG->libdir . '/tablelib.php');
         require_once($CFG->dirroot . '/report/individualized/lib.php');
@@ -94,8 +93,10 @@ class report_fragment
             $rescols[$col] = ($val === false) ? true : (bool)(int)$val;
         }
         $actcols = [];
-        foreach (['activityname', 'availablefrom', 'duedate', 'grade', 'feedback', 'completion',
-                  'opendate', 'closedate', 'viewrange', 'viewcount', 'estimatedduration'] as $col) {
+        foreach (
+            ['activityname', 'availablefrom', 'duedate', 'grade', 'feedback', 'completion',
+                  'opendate', 'closedate', 'viewrange', 'viewcount', 'estimatedduration'] as $col
+        ) {
             $val = get_config('report_individualized', 'actcol_' . $col);
             $actcols[$col] = ($val === false) ? true : (bool)(int)$val;
         }
@@ -146,7 +147,6 @@ class report_fragment
         ob_start();
 
         foreach ($userstoshow as $user) {
-
             echo $OUTPUT->heading(
                 get_string('reportfor', 'report_individualized') . ' : ' . fullname($user),
                 3
@@ -173,7 +173,6 @@ class report_fragment
             }
 
             foreach ($courses as $course) {
-
                 $modinfo     = get_fast_modinfo($course, $user->id);
                 $allsections = $modinfo->get_section_info_all();
 
@@ -196,8 +195,10 @@ class report_fragment
                         continue;
                     }
                     foreach ($cmsbysection[$section->section] as $cm) {
-                        if ($cm->modname === 'feedback'
-                            && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                        if (
+                            $cm->modname === 'feedback'
+                            && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                        ) {
                             $globaltimefeedbacks[] = $cm;
                         } else if (in_array($cm->modname, $resourcetypes)) {
                             $globalresources[] = $cm;
@@ -236,7 +237,6 @@ class report_fragment
                 ob_start();
 
                 foreach ($allsections as $section) {
-
                     if (empty($cmsbysection[$section->section])) {
                         continue;
                     }
@@ -245,8 +245,10 @@ class report_fragment
                     $timefeedbackcm = null;
                     $visiblecms     = [];
                     foreach ($cmsbysection[$section->section] as $cm) {
-                        if ($cm->modname === 'feedback'
-                            && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                        if (
+                            $cm->modname === 'feedback'
+                            && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                        ) {
                             $timefeedbackcm = $cm;
                         } else {
                             $visiblecms[] = $cm;
@@ -275,7 +277,7 @@ class report_fragment
                             if ($datefrom > 0 && $ts < $datefrom) {
                                 continue;
                             }
-                            if ($dateto   > 0 && $ts > $dateto) {
+                            if ($dateto > 0 && $ts > $dateto) {
                                 continue;
                             }
                             $filtered[] = $cm;
@@ -292,7 +294,7 @@ class report_fragment
                             if ($datefrom > 0 && $ts < $datefrom) {
                                 continue;
                             }
-                            if ($dateto   > 0 && $ts > $dateto) {
+                            if ($dateto > 0 && $ts > $dateto) {
                                 continue;
                             }
                             $filtered[] = $cm;
@@ -666,7 +668,6 @@ class report_fragment
                         $atable->finish_output();
                         echo html_writer::end_div();
                     }
-
                 } // fin foreach sections
 
                 $courseoutput = ob_get_clean();
@@ -691,7 +692,6 @@ class report_fragment
                     echo $courseoutput;
                     echo html_writer::end_div();
                 }
-
             } // fin foreach courses
         } // fin foreach users
 

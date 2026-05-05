@@ -43,14 +43,14 @@ raise_memory_limit(MEMORY_HUGE);
 // 1. PARAMÈTRES ET PERMISSIONS
 // -------------------------------------------------------------------------
 
-$userid     = optional_param('userid',     0,  PARAM_INT);
-$courseid   = optional_param('courseid',   0,  PARAM_INT);
-$categoryid = optional_param('categoryid', 0,  PARAM_INT);
+$userid     = optional_param('userid', 0, PARAM_INT);
+$courseid   = optional_param('courseid', 0, PARAM_INT);
+$categoryid = optional_param('categoryid', 0, PARAM_INT);
 $sectionnum = optional_param('sectionnum', -1, PARAM_INT);
-$tabletype  = optional_param('tabletype',  '',  PARAM_ALPHA);
+$tabletype  = optional_param('tabletype', '', PARAM_ALPHA);
 
 $datefromstr = optional_param('datefrom', '', PARAM_ALPHANUMEXT);
-$datetostr   = optional_param('dateto',   '', PARAM_ALPHANUMEXT);
+$datetostr   = optional_param('dateto', '', PARAM_ALPHANUMEXT);
 
 $datefrom = 0;
 $dateto   = 0;
@@ -144,9 +144,7 @@ $html .= '<hr/>';
 if (empty($users)) {
     $html .= '<p>' . get_string('noenrolments', 'report_individualized') . '</p>';
 } else {
-
     foreach ($users as $user) {
-
         // Titre par étudiant uniquement en mode "tous les étudiants".
         if (!$singleuser) {
             $html .= '<h2 style="color:#222; font-size:15px; margin-top:16px; border-bottom:1px solid #ccc;">'
@@ -174,7 +172,6 @@ if (empty($users)) {
         }
 
         foreach ($courses as $course) {
-
             $modinfo     = get_fast_modinfo($course, $user->id);
             $allsections = $modinfo->get_section_info_all();
 
@@ -197,8 +194,10 @@ if (empty($users)) {
                     continue;
                 }
                 foreach ($cmsbysection[$section->section] as $cm) {
-                    if ($cm->modname === 'feedback'
-                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                    if (
+                        $cm->modname === 'feedback'
+                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                    ) {
                         $globaltimefeedbacks[] = $cm;
                     } else if (in_array($cm->modname, $resourcetypes)) {
                         $globalresources[] = $cm;
@@ -237,7 +236,6 @@ if (empty($users)) {
             $coursehtml = '';
 
             foreach ($allsections as $section) {
-
                 if (empty($cmsbysection[$section->section])) {
                     continue;
                 }
@@ -251,8 +249,10 @@ if (empty($users)) {
                 $timefeedbackcm = null;
                 $visiblecms     = [];
                 foreach ($cmsbysection[$section->section] as $cm) {
-                    if ($cm->modname === 'feedback'
-                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                    if (
+                        $cm->modname === 'feedback'
+                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                    ) {
                         $timefeedbackcm = $cm;
                     } else {
                         $visiblecms[] = $cm;
@@ -274,9 +274,16 @@ if (empty($users)) {
                     $filtered = [];
                     foreach ($resources as $cm) {
                         $ts = date_util::get_module_availablefrom_timestamp($cm);
-                        if ($ts === 0) { $filtered[] = $cm; continue; }
-                        if ($datefrom > 0 && $ts < $datefrom) { continue; }
-                        if ($dateto   > 0 && $ts > $dateto)   { continue; }
+                        if ($ts === 0) {
+                            $filtered[] = $cm;
+                            continue;
+                        }
+                        if ($datefrom > 0 && $ts < $datefrom) {
+                            continue;
+                        }
+                        if ($dateto > 0 && $ts > $dateto) {
+                            continue;
+                        }
                         $filtered[] = $cm;
                     }
                     $resources = $filtered;
@@ -284,9 +291,16 @@ if (empty($users)) {
                     $filtered = [];
                     foreach ($activities as $cm) {
                         $ts = date_util::get_module_availablefrom_timestamp($cm);
-                        if ($ts === 0) { $filtered[] = $cm; continue; }
-                        if ($datefrom > 0 && $ts < $datefrom) { continue; }
-                        if ($dateto   > 0 && $ts > $dateto)   { continue; }
+                        if ($ts === 0) {
+                            $filtered[] = $cm;
+                            continue;
+                        }
+                        if ($datefrom > 0 && $ts < $datefrom) {
+                            continue;
+                        }
+                        if ($dateto > 0 && $ts > $dateto) {
+                            continue;
+                        }
                         $filtered[] = $cm;
                     }
                     $activities = $filtered;
@@ -325,17 +339,16 @@ if (empty($users)) {
                 // TABLEAU RESSOURCES
                 // -----------------------------------------------------------------
                 if ((empty($tabletype) || $tabletype === 'resources') && !empty($resources)) {
-
                     $coursehtml .= '<h4 style="color:#555; font-size:11px;">'
                         . get_string('resources', 'report_individualized') . '</h4>';
                     $coursehtml .= '<table border="1" cellpadding="4" cellspacing="0"
                                           style="width:100%; font-size:9px; border-collapse:collapse;">';
                     $coursehtml .= '<tr style="background-color:#e8e8e8; font-weight:bold;">';
-                    $coursehtml .= '<th>' . get_string('resourcename',      'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('availablefrom',     'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('viewed',            'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('viewrange',         'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('viewcount',         'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('resourcename', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('availablefrom', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('viewed', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('viewrange', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('viewcount', 'report_individualized') . '</th>';
                     $coursehtml .= '<th>' . get_string('estimatedduration', 'report_individualized') . '</th>';
                     $coursehtml .= '</tr>';
 
@@ -360,26 +373,24 @@ if (empty($users)) {
                 // TABLEAU ACTIVITÉS
                 // -----------------------------------------------------------------
                 if ((empty($tabletype) || $tabletype === 'activities') && !empty($activities)) {
-
                     $coursehtml .= '<h4 style="color:#555; font-size:11px;">'
                         . get_string('activities', 'report_individualized') . '</h4>';
                     $coursehtml .= '<table border="1" cellpadding="4" cellspacing="0"
                                           style="width:100%; font-size:9px; border-collapse:collapse;">';
                     $coursehtml .= '<tr style="background-color:#e8e8e8; font-weight:bold;">';
-                    $coursehtml .= '<th>' . get_string('activityname',      'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('availablefrom',     'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('duedate',           'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('grade',             'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('feedback',          'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('completion',        'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('opendate',          'report_individualized') . '</th>';
-                    $coursehtml .= '<th>' . get_string('closedate',         'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('activityname', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('availablefrom', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('duedate', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('grade', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('feedback', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('completion', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('opendate', 'report_individualized') . '</th>';
+                    $coursehtml .= '<th>' . get_string('closedate', 'report_individualized') . '</th>';
                     $coursehtml .= '<th>' . get_string('estimatedduration', 'report_individualized') . '</th>';
                     $coursehtml .= '</tr>';
 
                     $rowindex = 0;
                     foreach ($activities as $cm) {
-
                         $firstview = $DB->get_record_select(
                             'logstore_standard_log',
                             'userid = :userid AND contextinstanceid = :cmid
@@ -463,7 +474,6 @@ if (empty($users)) {
                 }
 
                 $coursehtml .= '<br/>';
-
             } // fin foreach sections
 
             if (!empty($coursehtml)) {
@@ -481,9 +491,7 @@ if (empty($users)) {
                 }
                 $html .= $coursehtml;
             }
-
         } // fin foreach courses
-
     } // fin foreach users
 }
 

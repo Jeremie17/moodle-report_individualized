@@ -96,8 +96,7 @@ class summary_util
      * @param  int        $userid          Identifiant étudiant.
      * @return string                      Durée totale formatée ou '-'.
      */
-    private static function sum_student_duration(array $timefeedbackcms, int $userid): string
-    {
+    private static function sum_student_duration(array $timefeedbackcms, int $userid): string {
         if (empty($timefeedbackcms)) {
             return '-';
         }
@@ -118,8 +117,7 @@ class summary_util
      * @param  int        $userid     Identifiant étudiant.
      * @return array|null             {done, total, pct} ou null.
      */
-    private static function compute_completion_rate(array $activities, int $userid): ?array
-    {
+    private static function compute_completion_rate(array $activities, int $userid): ?array {
         global $DB;
 
         if (empty($activities)) {
@@ -132,16 +130,20 @@ class summary_util
                 // Workshop compte pour 2 : soumission + évaluation.
                 $total += 2;
                 // Soumission.
-                if ($DB->record_exists('workshop_submissions', [
+                if (
+                    $DB->record_exists('workshop_submissions', [
                     'workshopid' => $cm->instance,
                     'authorid'   => $userid,
-                ])) {
+                    ])
+                ) {
                     $done++;
                 }
                 // Évaluation (l'étudiant a évalué au moins un pair).
-                if ($DB->record_exists('workshop_assessments', [
+                if (
+                    $DB->record_exists('workshop_assessments', [
                     'reviewerid' => $userid,
-                ])) {
+                    ])
+                ) {
                     $done++;
                 }
             } else {
@@ -168,8 +170,7 @@ class summary_util
      * @param  int        $userid     Identifiant étudiant.
      * @return array|null             {avg, max, count} ou null.
      */
-    private static function compute_avg_grade(array $activities, int $userid): ?array
-    {
+    private static function compute_avg_grade(array $activities, int $userid): ?array {
         global $DB;
 
         if (empty($activities)) {
@@ -268,8 +269,7 @@ class summary_util
      * @param  array $summary Issu de compute().
      * @return string         HTML du bandeau ou chaîne vide si aucune métrique.
      */
-    public static function render_pills(array $summary): string
-    {
+    public static function render_pills(array $summary): string {
         $pills = '';
 
         // Durée estimée prof.
@@ -337,8 +337,7 @@ class summary_util
      * @param  array $summary Issu de compute().
      * @return string         Métriques séparées par " | ".
      */
-    public static function render_pdf(array $summary): string
-    {
+    public static function render_pdf(array $summary): string {
         $parts = [];
 
         if (!empty($summary['profestimated']) && $summary['profestimated'] !== '-') {

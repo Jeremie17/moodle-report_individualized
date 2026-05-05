@@ -320,7 +320,6 @@ $headerviewcount = get_string('viewcount_line1', 'report_individualized') . '<br
 
 if (!empty($userstoshow)) {
     foreach ($userstoshow as $user) {
-
         echo $OUTPUT->heading(
             get_string('reportfor', 'report_individualized') . ' : ' . fullname($user),
             3
@@ -349,7 +348,6 @@ if (!empty($userstoshow)) {
         $resourcetypes = ['resource', 'url', 'page', 'folder', 'book', 'label', 'file'];
 
         foreach ($courses as $course) {
-
             $modinfo     = get_fast_modinfo($course, $user->id);
             $allsections = $modinfo->get_section_info_all();
 
@@ -372,8 +370,10 @@ if (!empty($userstoshow)) {
                     continue;
                 }
                 foreach ($cmsbysection[$section->section] as $cm) {
-                    if ($cm->modname === 'feedback'
-                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                    if (
+                        $cm->modname === 'feedback'
+                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                    ) {
                         $globaltimefeedbacks[] = $cm;
                     } else if (in_array($cm->modname, $resourcetypes)) {
                         $globalresources[] = $cm;
@@ -414,7 +414,6 @@ if (!empty($userstoshow)) {
             ob_start();
 
             foreach ($allsections as $section) {
-
                 if (empty($cmsbysection[$section->section])) {
                     continue;
                 }
@@ -423,8 +422,10 @@ if (!empty($userstoshow)) {
                 $timefeedbackcm = null;
                 $visiblecms     = [];
                 foreach ($cmsbysection[$section->section] as $cm) {
-                    if ($cm->modname === 'feedback'
-                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
+                    if (
+                        $cm->modname === 'feedback'
+                        && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
+                    ) {
                         $timefeedbackcm = $cm;
                     } else {
                         $visiblecms[] = $cm;
@@ -672,7 +673,6 @@ if (!empty($userstoshow)) {
                     $atable->setup();
 
                     foreach ($activities as $cm) {
-
                         // Trace d'ouverture.
                         $openparams = [
                             'userid'   => $user->id,
@@ -883,7 +883,6 @@ if (!empty($userstoshow)) {
                 echo $courseoutput;
                 echo html_writer::end_div();
             }
-
         } // fin foreach courses
     }
 }

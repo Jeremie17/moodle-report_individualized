@@ -198,8 +198,8 @@ class view_stats_util {
 
         return [
             'count' => $rec ? (int)$rec->viewcount : 0,
-            'first' => $rec ? (int)$rec->firstview  : 0,
-            'last'  => $rec ? (int)$rec->lastview    : 0,
+            'first' => $rec ? (int)$rec->firstview : 0,
+            'last'  => $rec ? (int)$rec->lastview : 0,
         ];
     }
 

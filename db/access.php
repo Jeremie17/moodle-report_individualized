@@ -38,10 +38,10 @@ $capabilities = [
 
         // Héritage : quels archetypes de rôles ont cette capability par défaut.
         'archetypes'   => [
-            'manager'        => CAP_ALLOW,  // Gestionnaire : oui
-            'coursecreator'  => CAP_ALLOW,  // Créateur de cours : oui
-            'editingteacher' => CAP_ALLOW,  // Enseignant éditeur : oui
-            'teacher'        => CAP_ALLOW,  // Enseignant non éditeur : oui
+            'manager'        => CAP_ALLOW, // Gestionnaire : oui
+            'coursecreator'  => CAP_ALLOW, // Créateur de cours : oui
+            'editingteacher' => CAP_ALLOW, // Enseignant éditeur : oui
+            'teacher'        => CAP_ALLOW, // Enseignant non éditeur : oui
             'student'        => CAP_PREVENT, // Étudiant : non (il ne voit pas les autres)
             'guest'          => CAP_PREVENT, // Invité : non
         ],

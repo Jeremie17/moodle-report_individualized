@@ -80,8 +80,7 @@ class feedback_util
      * @param  int      $userid Identifiant étudiant.
      * @return string           Commentaire de correction ou '-'.
      */
-    public static function get_assign_feedback(\cm_info $cm, int $userid): string
-    {
+    public static function get_assign_feedback(\cm_info $cm, int $userid): string {
         global $DB;
 
         $assigngrade = $DB->get_record(
@@ -118,8 +117,7 @@ class feedback_util
      * @param  int      $userid Identifiant étudiant.
      * @return string           Texte du feedback ou '-'.
      */
-    public static function get_quiz_feedback(\cm_info $cm, int $userid): string
-    {
+    public static function get_quiz_feedback(\cm_info $cm, int $userid): string {
         global $DB;
 
         $quizgrade = $DB->get_record(
@@ -157,8 +155,7 @@ class feedback_util
      * @param  int      $userid Identifiant étudiant.
      * @return string           Feedback formaté ou '-'.
      */
-    public static function get_gradebook_feedback(\cm_info $cm, int $userid): string
-    {
+    public static function get_gradebook_feedback(\cm_info $cm, int $userid): string {
         global $DB;
 
         $gradeitem = $DB->get_record('grade_items', [

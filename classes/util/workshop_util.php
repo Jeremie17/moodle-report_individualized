@@ -90,7 +90,6 @@ class workshop_util
         $items = [];
 
         foreach ($gradeitems as $gradeitem) {
-
             $itemnumber = (int)$gradeitem->itemnumber;
 
             if ($feedbacktype === 'submission' && $itemnumber !== 0) {
@@ -125,7 +124,6 @@ class workshop_util
 
             // --- Trace de fermeture, complétion, duedate ---
             if ($itemnumber === 0) {
-
                 $submission = $DB->get_record(
                     'workshop_submissions',
                     ['workshopid' => $cm->instance, 'authorid' => $userid],
@@ -163,9 +161,7 @@ class workshop_util
                         $duedatestr = date_util::format_datetime((int)$submission->timecreated, $plaintext);
                     }
                 }
-
             } else {
-
                 $sql = 'SELECT MAX(wa.timemodified) AS tmod
                           FROM {workshop_assessments} wa
                           JOIN {workshop_submissions} ws ON ws.id = wa.submissionid

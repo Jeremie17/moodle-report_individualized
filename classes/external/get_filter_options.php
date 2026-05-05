@@ -44,7 +44,6 @@ use report_individualized\util\category_util;
  *  - Categories list is always the full set (built from all enrolled-student courses).
  */
 class get_filter_options extends external_api {
-
     /**
      * Describes the input parameters.
      *
@@ -52,8 +51,8 @@ class get_filter_options extends external_api {
      */
     public static function execute_parameters(): external_function_parameters {
         return new external_function_parameters([
-            'userid'     => new external_value(PARAM_INT, 'Currently selected user ID (0 = all)',     VALUE_DEFAULT, 0),
-            'courseid'   => new external_value(PARAM_INT, 'Currently selected course ID (0 = all)',   VALUE_DEFAULT, 0),
+            'userid'     => new external_value(PARAM_INT, 'Currently selected user ID (0 = all)', VALUE_DEFAULT, 0),
+            'courseid'   => new external_value(PARAM_INT, 'Currently selected course ID (0 = all)', VALUE_DEFAULT, 0),
             'categoryid' => new external_value(PARAM_INT, 'Currently selected category ID (0 = all)', VALUE_DEFAULT, 0),
         ]);
     }
@@ -169,7 +168,7 @@ class get_filter_options extends external_api {
         // Structure partagée pour les listes d'options.
         $optionlist = new external_multiple_structure(
             new external_single_structure([
-                'id'   => new external_value(PARAM_INT,  'Option value (ID)'),
+                'id'   => new external_value(PARAM_INT, 'Option value (ID)'),
                 'name' => new external_value(PARAM_TEXT, 'Option label'),
             ])
         );

@@ -25,7 +25,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-
     // Lien vers le rapport dans le bloc Rapports.
     $ADMIN->add(
         'reports',

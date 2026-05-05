@@ -3,3 +3,5 @@
 amd/build/
 *.log
 *.tar.gz
+composer.json
+vendor/
