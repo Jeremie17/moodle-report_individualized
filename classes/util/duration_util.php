@@ -213,6 +213,13 @@ class duration_util {
         return 0;
     }
 
+    /**
+     * Retourne la durée déclarée par l'étudiant pour un module, formatée.
+     *
+     * @param  \cm_info $cm     Module de cours.
+     * @param  int      $userid Identifiant étudiant.
+     * @return string           Durée formatée ou '-'.
+     */
     public static function get_student_duration(\cm_info $cm, int $userid): string {
         global $DB;
 
