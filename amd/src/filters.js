@@ -35,8 +35,6 @@ define([
 
     'use strict';
 
-    var isUpdatingSelects = false;
-
     /**
      * Rebuild a <select> element with a new list of options.
      * Restores the previously selected value if it still exists in the new list.
@@ -150,8 +148,9 @@ define([
         } catch (e) {
             // URL parsing failed — leave href unchanged.
         }
-    }
+    };
 
+    let isUpdatingSelects = false;
     /**
      * Initialise the AJAX filter behaviour.
      * Called by index.php via $PAGE->requires->js_call_amd().
