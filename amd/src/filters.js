@@ -150,17 +150,15 @@ define([
         } catch (e) {
             // URL parsing failed — leave href unchanged.
         }
-    };
+    }
 
     /**
      * Initialise the AJAX filter behaviour.
      * Called by index.php via $PAGE->requires->js_call_amd().
      *
      * @param {number} contextid  Moodle system context ID.
-     * @param {number} categoryid Initial category ID from server-side render.
      */
-
-    function init(contextid, categoryid) {
+    function init(contextid) {
         const categorySelect = document.getElementById('categoryid');
         const userSelect = document.getElementById('userid');
         const courseSelect = document.getElementById('courseid');
