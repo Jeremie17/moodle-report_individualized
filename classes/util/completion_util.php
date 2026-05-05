@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Utility class for completion icons and status.
  */
 class completion_util {
-
     /**
      * Retourne vrai si l'activité est complétée par l'étudiant.
      *

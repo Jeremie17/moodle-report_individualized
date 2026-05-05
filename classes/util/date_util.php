@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Utility class for all date-related operations.
  */
 class date_util {
-
     /**
      * Formate un timestamp en date + heure sur deux lignes.
      *

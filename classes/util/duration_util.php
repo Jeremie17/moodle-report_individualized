@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Utility class for duration formatting and retrieval.
  */
 class duration_util {
-
     /**
      * Durée forfaitaire (en minutes) attribuée aux lignes workshop d'évaluation.
      *

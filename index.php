@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -302,7 +301,7 @@ echo html_writer::start_div('', ['id' => 'report-individualized-content']);
 $userstoshow = [];
 if ($userid > 0) {
     $userstoshow[] = $DB->get_record('user', ['id' => $userid, 'deleted' => 0], '*', MUST_EXIST);
-} elseif (!empty($allusers)) {
+} else if (!empty($allusers)) {
     $userstoshow = array_values($allusers);
 }
 
@@ -376,7 +375,7 @@ if (!empty($userstoshow)) {
                     if ($cm->modname === 'feedback'
                         && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
                         $globaltimefeedbacks[] = $cm;
-                    } elseif (in_array($cm->modname, $resourcetypes)) {
+                    } else if (in_array($cm->modname, $resourcetypes)) {
                         $globalresources[] = $cm;
                     } else {
                         $globalactivities[] = $cm;

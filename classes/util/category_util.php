@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Helpers for course category filtering and path display.
  */
 class category_util {
-
     /**
      * Returns the full category path string for a given category ID.
      *

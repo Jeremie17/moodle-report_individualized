@@ -30,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Utility class for consultation statistics, module type labels and modality.
  */
 class view_stats_util {
-
     /**
      * Retourne le nom localisé d'un module de cours.
      *

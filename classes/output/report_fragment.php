@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - https://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -200,7 +199,7 @@ class report_fragment
                         if ($cm->modname === 'feedback'
                             && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0) {
                             $globaltimefeedbacks[] = $cm;
-                        } elseif (in_array($cm->modname, $resourcetypes)) {
+                        } else if (in_array($cm->modname, $resourcetypes)) {
                             $globalresources[] = $cm;
                         } else {
                             $globalactivities[] = $cm;
