@@ -47,7 +47,7 @@ define([
     function updateSelect(select, options, selectedId) {
         isUpdatingSelects = true;
         select.innerHTML = '';
-        options.forEach(opt => {
+        options.forEach(function (opt) {
             const el = document.createElement('option');
             el.value = opt.id;
             el.textContent = opt.name;
