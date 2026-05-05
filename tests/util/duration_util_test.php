@@ -34,8 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class duration_util_test extends \advanced_testcase {
-
+final class duration_util_test extends \advanced_testcase {
     /**
      * Teste que les durées nulles ou négatives retournent '-'.
      */

@@ -2,7 +2,7 @@
 <phpunit>
     <testsuites>
         <testsuite name="report_individualized">
-            <directory suffix="_test.php">tests</directory>
+            <directory suffix="_test.php">tests/util</directory>
         </testsuite>
     </testsuites>
 </phpunit>

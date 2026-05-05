@@ -34,8 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class date_util_test extends \advanced_testcase {
-
+final class date_util_test extends \advanced_testcase {
     /**
      * Teste qu'un timestamp nul retourne '-'.
      */

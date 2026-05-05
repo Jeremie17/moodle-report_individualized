@@ -34,8 +34,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class summary_util_test extends \advanced_testcase {
-
+final class summary_util_test extends \advanced_testcase {
     /** @var \stdClass Cours de test. */
     private \stdClass $course;
 
