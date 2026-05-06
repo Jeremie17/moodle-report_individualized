@@ -13,8 +13,8 @@ Developed by Ifrass (2025–2026).
 | Dependency | Version |
 |---|---|
 | Moodle | 5.0 or higher (build 2025041400+) |
-| PHP | 8.1 or higher |
-| Node.js | 16 or 18 (for AMD compilation — see [Deployment](#deployment)) |
+| PHP | 8.2 or higher |
+| Node.js | 22 (runtime) — see [Known limitations](#known-limitations) for AMD compilation |
 
 ---
 
@@ -62,7 +62,7 @@ To allow students to declare how long they spent on a section, the teacher creat
 
 ## Features
 
-- Filter by student, course, and date range
+- Filter by student, course, category, and date range
 - Report organized by course section
 - Two tables per section: **Resources** and **Activities**
 - Summary badges per section and per course (estimated duration, student declared duration, completion rate, average grade, resources viewed)
@@ -78,28 +78,23 @@ To allow students to declare how long they spent on a section, the teacher creat
 
 ## H5P support
 
-All H5P activities appear in the **Activities** table regardless of their content type (video, flashcard, quiz, etc.).
+All H5P activities appear in the **Activities** table regardless of their content type.
 
 ### What the report can display
 
 | H5P content type | Completion | Closing trace | Notes |
 |---|---|---|---|
 | Flashcard | ✓ when all cards answered | ✓ | Fully supported |
-| Interactive Video with quizzes | ✓ when submitted | ✓ | Student must click **Submit answers** at the end |
+| Interactive Video with quizzes | ✓ after submission | ✓ | Student must click **Submit answers** at the end |
 | Simple video (no quizzes) | ✗ always | — always | See limitation below |
 
 ### Opening and closing dates
 
-H5P activities do not have native availability settings. The plugin reads dates from **access restrictions** configured on the activity:
-
-- **Opening date**: the "from" date restriction (`≥`).
-- **Closing date**: the "until" date restriction (`<`).
-
-If no restriction is configured, the fallback chain applies: grade timestamp → student submission trace.
+H5P activities do not have native availability settings. The plugin reads dates from **access restrictions** configured on the activity. If no restriction is configured, the fallback chain applies: grade timestamp → student submission trace.
 
 ### Known H5P limitation
 
-Simple H5P videos (YouTube or file with no integrated quizzes) do not send any xAPI statement to Moodle when played. As a result, the completion column will always show ✗ and the closing trace will always be empty (—), regardless of how much of the video the student watched. This is a limitation of H5P itself and cannot be worked around at the plugin level.
+Simple H5P videos (YouTube or file with no integrated quizzes) do not send any xAPI statement to Moodle when played. Completion will always show ✗ and the closing trace will always be empty (—), regardless of how much of the video the student watched. This is a limitation of H5P itself.
 
 **Recommendation**: use H5P Interactive Video with at least one integrated quiz, and remind students to click **Submit answers** at the end for their progress to be recorded.
 
@@ -127,20 +122,26 @@ $CFG->cachejs = false;
 
 ### Production deployment
 
-Node.js 22 is incompatible with Moodle's Gruntfile. Use Node.js **16 or 18** to compile AMD modules before deploying.
+AMD compilation via Moodle's Gruntfile is currently blocked by a compatibility issue between Moodle 5.1.x and Node.js 22. Build files are pre-compiled using terser as a workaround until Moodle resolves this upstream. See [Known limitations](#known-limitations) for details.
+
+---
+
+## Running tests
+
+PHPUnit tests are included for the core utility classes. To run them locally:
 
 ```bash
-# From the Moodle root directory
-cd /path/to/moodle/public
-npm install
-npx grunt amd --root report/individualized
+# Initialize PHPUnit environment (once)
+php admin/tool/phpunit/cli/init.php
+
+# Run all plugin tests
+cd report/individualized
+php /path/to/moodle/vendor/bin/phpunit \
+    --bootstrap /path/to/moodle/public/lib/phpunit/bootstrap.php \
+    --testdox
 ```
 
-This generates `amd/build/filters.min.js`. Once generated:
-
-1. Remove `$CFG->cachejs = false;` from `config.php`.
-2. Purge all Moodle caches.
-3. Bump `$plugin->version` in `version.php`.
+Tests cover: `duration_util`, `date_util`, `completion_util`, `summary_util`.
 
 ---
 
@@ -154,6 +155,7 @@ report/individualized/
 ├── index.php                            Main report page
 ├── export_pdf.php                       PDF export
 ├── styles.css                           Custom CSS
+├── phpunit.xml                          PHPUnit test suite configuration
 ├── amd/
 │   ├── src/filters.js                   AMD module (AJAX filters, source)
 │   └── build/filters.min.js            AMD module (compiled — required in production)
@@ -169,10 +171,13 @@ report/individualized/
 │       ├── duration_util.php            Duration formatting and retrieval
 │       ├── feedback_util.php            Feedback retrieval per module type
 │       ├── workshop_util.php            Workshop-specific data (2 rows)
-│       └── summary_util.php             Summary metrics (completion rate, avg grade…)
+│       ├── summary_util.php             Summary metrics (completion rate, avg grade…)
+│       └── category_util.php            Category path and filtering
 ├── db/
 │   ├── access.php                       Capability definitions
 │   └── services.php                     External function declarations
+├── tests/
+│   └── util/                            PHPUnit test files
 └── lang/
     ├── en/report_individualized.php     English strings
     └── fr/report_individualized.php     French strings
@@ -185,8 +190,8 @@ report/individualized/
 - Pagination is not implemented. With `flexible_table` and PHP-side data accumulation, native Moodle pagination requires SQL-driven queries. This is planned for a future version.
 - Resource engagement cannot be verified beyond the `viewed` log event. Moodle does not track time spent on files or external URLs.
 - Simple H5P videos (no integrated quizzes) do not generate xAPI statements — completion and closing trace are unavailable for this content type.
-- AMD compilation requires Node.js 16 or 18 (Node.js 22 is incompatible with the Moodle Gruntfile).
-- AMD compilation via Moodle's Gruntfile is currently blocked by a compatibility issue between Moodle 5.1.3 and Node.js 22. Build files are pre-compiled using terser as a workaround until Moodle resolves this upstream.
+- AMD compilation via Moodle's Gruntfile is currently blocked by a compatibility issue between Moodle 5.1.x and Node.js 22. Build files are pre-compiled using terser as a workaround until Moodle resolves this upstream.
+
 ---
 
 ## License
