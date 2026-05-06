@@ -31,9 +31,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-// =============================================================================
 // Navigation hooks.
-// =============================================================================
 
 /**
  * Ajoute un lien dans la navigation du profil utilisateur.
@@ -95,9 +93,7 @@ function report_individualized_extend_navigation_course(
     );
 }
 
-// =============================================================================
 // AJAX fragment callback.
-// =============================================================================
 
 /**
  * Fragment callback : rend le contenu du rapport via AJAX.

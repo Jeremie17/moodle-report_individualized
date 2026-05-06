@@ -78,7 +78,7 @@ class view_stats_util {
             return '-';
         }
 
-        // configdata is a JSON string: {"options":"Recherche personnelle\r\nDébat\r\n..."}.
+        // Configdata is a JSON string: {"options":"Recherche personnelle\r\nDébat\r\n..."}.
         $config = json_decode($rec->configdata);
 
         if (!$config || empty($config->options)) {

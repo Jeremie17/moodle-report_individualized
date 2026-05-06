@@ -369,7 +369,7 @@ if (empty($users)) {
                 }
 
                 // Activities table.
-                
+
                 if ((empty($tabletype) || $tabletype === 'activities') && !empty($activities)) {
                     $coursehtml .= '<h4 style="color:#555; font-size:11px;">'
                         . get_string('activities', 'report_individualized') . '</h4>';

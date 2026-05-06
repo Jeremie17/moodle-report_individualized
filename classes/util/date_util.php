@@ -49,7 +49,7 @@ class date_util {
         }
         // Format: %d = day number, %B = month name, %Y = full year.
         $datepart = userdate($ts, '%d %B %Y');
-        // %H = hour (24h), %M = minutes.
+        // Hour (24h) and minutes format.
         $timepart = str_replace(':', 'h', userdate($ts, '%H:%M'));
 
         if ($plaintext) {

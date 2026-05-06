@@ -36,10 +36,10 @@ $capabilities = [
         // CONTEXT_SYSTEM = administration globale du site.
         'contextlevel' => CONTEXT_SYSTEM,
 
-        // Héritage : quels archetypes de rôles ont cette capability par défaut.
+        // Default role archetypes for this capability.
         'archetypes'   => [
-            'manager'        => CAP_ALLOW, // Gestionnaire : oui
-            'coursecreator'  => CAP_ALLOW, // Créateur de cours : oui
+            'manager'        => CAP_ALLOW, // Manager: yes.
+            'coursecreator'  => CAP_ALLOW, // Course creator: yes.
             'editingteacher' => CAP_ALLOW, // Editing teacher: yes.
             'teacher'        => CAP_ALLOW, // Non-editing teacher: yes.
             'student'        => CAP_PREVENT, // Student: no (cannot view other students).
