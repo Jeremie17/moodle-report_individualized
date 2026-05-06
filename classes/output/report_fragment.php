@@ -67,7 +67,7 @@ class report_fragment
         $context = \context_system::instance();
         require_capability('report/individualized:view', $context);
 
-        // --- Paramètres ---
+        // Parameters.
         $userid      = isset($args['userid']) ? clean_param($args['userid'], PARAM_INT) : 0;
         $courseid    = isset($args['courseid']) ? clean_param($args['courseid'], PARAM_INT) : 0;
         $categoryid  = isset($args['categoryid']) ? clean_param($args['categoryid'], PARAM_INT) : 0;
@@ -86,7 +86,7 @@ class report_fragment
             $dateto = (int)make_timestamp((int)$y, (int)$m, (int)$d, 23, 59, 59);
         }
 
-        // --- Colonnes visibles ---
+        // Visible columns.
         $rescols = [];
         foreach (['resourcename', 'availablefrom', 'viewed', 'viewrange', 'viewcount', 'estimatedduration'] as $col) {
             $val = get_config('report_individualized', 'rescol_' . $col);
@@ -101,7 +101,7 @@ class report_fragment
             $actcols[$col] = ($val === false) ? true : (bool)(int)$val;
         }
 
-        // --- Utilisateurs à afficher ---
+        // Users to display.
         $userstoshow = [];
         if ($userid > 0) {
             $user = $DB->get_record('user', ['id' => $userid, 'deleted' => 0], '*', IGNORE_MISSING);
@@ -129,7 +129,7 @@ class report_fragment
             return '';
         }
 
-        // --- En-têtes de colonnes ---
+        // Column headers.
         $connector      = get_string('columnheader_connector', 'report_individualized');
         $rheadertype    = get_string('resourcename_type', 'report_individualized')
             . $connector . '<br>'
@@ -328,9 +328,7 @@ class report_fragment
                     echo html_writer::end_div();
                     echo summary_util::render_pills($sectionsummary);
 
-                    // =========================================================
-                    // TABLEAU RESSOURCES
-                    // =========================================================
+                    // Resources table.
                     if (!empty($resources)) {
                         echo html_writer::start_div('report-individualized-table-wrap');
                         $tablepdfurl = new \moodle_url('/report/individualized/export_pdf.php', [
@@ -414,9 +412,7 @@ class report_fragment
                         echo html_writer::end_div();
                     }
 
-                    // =========================================================
-                    // TABLEAU ACTIVITÉS
-                    // =========================================================
+                    // Activities table.
                     if (!empty($activities)) {
                         echo html_writer::start_div('report-individualized-table-wrap');
                         $tablepdfurl = new \moodle_url('/report/individualized/export_pdf.php', [

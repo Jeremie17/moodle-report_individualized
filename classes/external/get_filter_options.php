@@ -78,7 +78,7 @@ class get_filter_options extends external_api {
         self::validate_context($context);
         require_capability('report/individualized:view', $context);
 
-        // --- Liste des étudiants ---
+        // Student list.
         $users = [['id' => 0, 'name' => get_string('allusers', 'report_individualized')]];
 
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -113,7 +113,7 @@ class get_filter_options extends external_api {
             }
         }
 
-        // --- Liste des cours (avec filtre catégorie et/ou étudiant) ---
+        // Course list (filtered by category and/or student).
         $courses = [['id' => 0, 'name' => get_string('allcourses', 'report_individualized')]];
 
         if ($userid > 0) {
@@ -145,7 +145,7 @@ class get_filter_options extends external_api {
             }
         }
 
-        // --- Liste des catégories (toujours la liste complète, indépendante des autres filtres) ---
+        // Category list (always the full set, independent of other filters).
         $categories = [['id' => 0, 'name' => get_string('allcategories', 'report_individualized')]];
         $catopts    = category_util::get_category_options(0);
         foreach ($catopts as $opt) {

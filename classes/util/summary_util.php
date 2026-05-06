@@ -128,7 +128,7 @@ class summary_util {
                 ) {
                     $done++;
                 }
-                // Évaluation (l'étudiant a évalué au moins un pair).
+                // Assessment (student has assessed at least one peer).
                 if (
                     $DB->record_exists('workshop_assessments', [
                     'reviewerid' => $userid,

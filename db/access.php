@@ -40,15 +40,14 @@ $capabilities = [
         'archetypes'   => [
             'manager'        => CAP_ALLOW, // Gestionnaire : oui
             'coursecreator'  => CAP_ALLOW, // Créateur de cours : oui
-            'editingteacher' => CAP_ALLOW, // Enseignant éditeur : oui
-            'teacher'        => CAP_ALLOW, // Enseignant non éditeur : oui
-            'student'        => CAP_PREVENT, // Étudiant : non (il ne voit pas les autres)
-            'guest'          => CAP_PREVENT, // Invité : non
+            'editingteacher' => CAP_ALLOW, // Editing teacher: yes.
+            'teacher'        => CAP_ALLOW, // Non-editing teacher: yes.
+            'student'        => CAP_PREVENT, // Student: no (cannot view other students).
+            'guest'          => CAP_PREVENT, // Guest: no.
         ],
-
-        // clonepermissionsfrom : si la capability n'existe pas encore sur un rôle
-        // personnalisé existant, elle hérite des permissions de cette capability
-        // core — évite de devoir reconfigurer tous les rôles manuellement.
+        // clonepermissionsfrom: if the capability does not yet exist on a custom role,
+        // it inherits permissions from this core capability,
+        // avoiding the need to reconfigure all roles manually.
         'clonepermissionsfrom' => 'moodle/site:viewreports',
     ],
 ];

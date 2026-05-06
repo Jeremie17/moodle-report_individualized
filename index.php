@@ -166,7 +166,7 @@ $PAGE->requires->js_call_amd(
     [$context->id, $categoryid]
 );
 
-// --- Barre sticky : filtres + bouton PDF ---
+// Sticky bar: filters and PDF button.
 $pdfurl = new moodle_url('/report/individualized/export_pdf.php', [
     'userid'     => $userid,
     'courseid'   => $courseid,
@@ -185,7 +185,7 @@ echo html_writer::start_tag('form', [
     'class'  => 'd-flex align-items-center gap-3 flex-grow-1 flex-wrap',
 ]);
 
-// --- Filtre Catégorie (en premier) ---
+// Category filter (displayed first).
 echo html_writer::tag(
     'label',
     get_string('selectcategory', 'report_individualized'),
@@ -201,7 +201,7 @@ echo html_writer::select($catopts, 'categoryid', $categoryid, false, [
     'class' => 'form-select me-3',
 ]);
 
-// --- Filtre Étudiant ---
+// Student filter.
 echo html_writer::tag(
     'label',
     get_string('selectuser', 'report_individualized'),
@@ -217,7 +217,7 @@ echo html_writer::select($useroptions, 'userid', $userid, false, [
     'class' => 'form-select me-3',
 ]);
 
-// --- Filtre Cours ---
+// Course filter.
 echo html_writer::tag(
     'label',
     get_string('selectcourse', 'report_individualized'),
@@ -233,7 +233,7 @@ echo html_writer::select($courseoptions, 'courseid', $courseid, false, [
     'class' => 'form-select me-3',
 ]);
 
-// --- Filtres de dates ---
+// Date filters.
 echo html_writer::tag(
     'label',
     get_string('datefrom', 'report_individualized'),
@@ -286,8 +286,8 @@ echo html_writer::link(
     ]
 );
 
-echo html_writer::end_div(); // ferme filters-inner
-echo html_writer::end_div(); // ferme report-individualized-filters
+echo html_writer::end_div(); // Closes filters-inner.
+echo html_writer::end_div(); // Closes report-individualized-filters.
 
 // -------------------------------------------------------------------------
 // 6. TABLEAUX
@@ -509,9 +509,7 @@ if (!empty($userstoshow)) {
                 echo html_writer::end_div();
                 echo summary_util::render_pills($sectionsummary);
 
-                // =============================================================
-                // TABLEAU RESSOURCES
-                // =============================================================
+                // Resources table.
                 if (!empty($resources)) {
                     echo html_writer::start_div('report-individualized-table-wrap');
                     $tablepdfurl = new moodle_url('/report/individualized/export_pdf.php', [
@@ -595,9 +593,7 @@ if (!empty($userstoshow)) {
                     echo html_writer::end_div();
                 }
 
-                // =============================================================
-                // TABLEAU ACTIVITÉS
-                // =============================================================
+                // Activities table.
                 if (!empty($activities)) {
                     echo html_writer::start_div('report-individualized-table-wrap');
                     $tablepdfurl = new moodle_url('/report/individualized/export_pdf.php', [
@@ -886,5 +882,5 @@ if (!empty($userstoshow)) {
         } // fin foreach courses
     }
 }
-echo html_writer::end_div(); // ferme report-individualized-content
+echo html_writer::end_div(); // Closes report-individualized-content.
 echo $OUTPUT->footer();

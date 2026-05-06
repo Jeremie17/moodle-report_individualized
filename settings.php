@@ -42,9 +42,7 @@ if ($hassiteconfig) {
         get_string('columnsettings', 'report_individualized')
     );
 
-    // -------------------------------------------------------------------------
-    // SECTION RESSOURCES
-    // -------------------------------------------------------------------------
+    // Resources section.
 
     $settings->add(new admin_setting_heading(
         'report_individualized/resourcesheading',
@@ -96,9 +94,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // -------------------------------------------------------------------------
-    // SECTION ACTIVITÉS
-    // -------------------------------------------------------------------------
+    // Activities section.
 
     $settings->add(new admin_setting_heading(
         'report_individualized/activitiesheading',
@@ -185,9 +181,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // -------------------------------------------------------------------------
-    // SECTION OPTIONS AVANCÉES
-    // -------------------------------------------------------------------------
+    // Advanced options section.
 
     $settings->add(new admin_setting_heading(
         'report_individualized/advancedheading',

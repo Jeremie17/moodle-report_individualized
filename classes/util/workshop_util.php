@@ -99,7 +99,7 @@ class workshop_util
                 continue;
             }
 
-            // --- Note ---
+            // Grade.
             $gradestr = '-';
             $grade    = $DB->get_record('grade_grades', [
                 'itemid' => $gradeitem->id,
@@ -110,19 +110,19 @@ class workshop_util
                     . ' / ' . round($gradeitem->grademax, 2);
             }
 
-            // --- Label ---
+            // Label.
             $label = !empty($gradeitem->itemname)
                 ? $gradeitem->itemname
                 : format_string($cm->name);
 
-            // --- Feedback ---
+            // Feedback.
             if ($itemnumber === 0) {
                 $feedbackstr = self::get_submission_feedback($cm, $userid, $plaintext);
             } else {
                 $feedbackstr = self::get_assessment_feedback($cm, $userid, $plaintext);
             }
 
-            // --- Trace de fermeture, complétion, duedate ---
+            // Closing trace, completion and due date.
             if ($itemnumber === 0) {
                 $submission = $DB->get_record(
                     'workshop_submissions',

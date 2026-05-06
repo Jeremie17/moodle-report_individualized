@@ -47,9 +47,9 @@ class date_util {
         if ($ts <= 0) {
             return '-';
         }
-        // strftime : %d = jour numérique, %B = nom du mois, %Y = année complète.
+        // Format: %d = day number, %B = month name, %Y = full year.
         $datepart = userdate($ts, '%d %B %Y');
-        // %H = heure (24h), %M = minutes.
+        // %H = hour (24h), %M = minutes.
         $timepart = str_replace(':', 'h', userdate($ts, '%H:%M'));
 
         if ($plaintext) {

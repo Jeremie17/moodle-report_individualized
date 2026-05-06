@@ -335,9 +335,8 @@ if (empty($users)) {
                         . $sectionbadge . '</p>';
                 }
 
-                // -----------------------------------------------------------------
-                // TABLEAU RESSOURCES
-                // -----------------------------------------------------------------
+                // Resources table.
+
                 if ((empty($tabletype) || $tabletype === 'resources') && !empty($resources)) {
                     $coursehtml .= '<h4 style="color:#555; font-size:11px;">'
                         . get_string('resources', 'report_individualized') . '</h4>';
@@ -369,9 +368,8 @@ if (empty($users)) {
                     $coursehtml .= '</table><br/>';
                 }
 
-                // -----------------------------------------------------------------
-                // TABLEAU ACTIVITÉS
-                // -----------------------------------------------------------------
+                // Activities table.
+                
                 if ((empty($tabletype) || $tabletype === 'activities') && !empty($activities)) {
                     $coursehtml .= '<h4 style="color:#555; font-size:11px;">'
                         . get_string('activities', 'report_individualized') . '</h4>';
