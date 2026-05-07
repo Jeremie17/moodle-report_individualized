@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * Unit tests for workshop_util.
+ * Unit tests for feedback_util.
  *
  * @package   report_individualized
  * @copyright 2025 Ifrass
@@ -27,14 +27,14 @@ namespace report_individualized\util;
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * Test case for workshop_util.
+ * Test case for feedback_util.
  *
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \report_individualized\util\workshop_util
+ * @covers    \report_individualized\util\feedback_util
  */
-final class workshop_util_test extends \advanced_testcase {
+final class feedback_util_test extends \advanced_testcase {
     /** @var \stdClass Test course. */
     private \stdClass $course;
 
@@ -65,97 +65,111 @@ final class workshop_util_test extends \advanced_testcase {
         return $modinfo->get_cm($cmid);
     }
 
-    // get_workshop_items tests.
+    // H5P tests.
 
     /**
-     * Tests that a workshop returns two items by default (both submission and assessment).
+     * Tests that h5pactivity always returns '-' (no teacher feedback supported).
      */
-    public function test_get_workshop_items_returns_two_items_by_default(): void {
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
+    public function test_h5pactivity_always_returns_dash(): void {
+        $h5p = $this->getDataGenerator()->create_module('h5pactivity', [
             'course' => $this->course->id,
         ]);
-        $cm    = $this->get_cm($workshop->cmid);
-        $items = workshop_util::get_workshop_items($cm, $this->student->id, $this->course->id);
+        $cm = $this->get_cm($h5p->cmid);
+        $this->assertEquals('-', feedback_util::get_activity_feedback($cm, $this->student->id));
+    }
 
-        $this->assertCount(2, $items);
+    // Assign feedback tests.
+
+    /**
+     * Tests that an assignment with no grade record returns '-'.
+     */
+    public function test_assign_no_grade_returns_dash(): void {
+        $assign = $this->getDataGenerator()->create_module('assign', [
+            'course' => $this->course->id,
+        ]);
+        $cm = $this->get_cm($assign->cmid);
+        $this->assertEquals('-', feedback_util::get_assign_feedback($cm, $this->student->id));
     }
 
     /**
-     * Tests that submission feedback_type setting returns only the submission row.
+     * Tests that an assignment with a grade but no feedback comment returns '-'.
      */
-    public function test_get_workshop_items_submission_type_returns_one_item(): void {
-        set_config('workshop_feedback_type', 'submission', 'report_individualized');
+    public function test_assign_grade_without_feedback_returns_dash(): void {
+        global $DB;
 
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
+        $assign = $this->getDataGenerator()->create_module('assign', [
             'course' => $this->course->id,
         ]);
-        $cm    = $this->get_cm($workshop->cmid);
-        $items = workshop_util::get_workshop_items($cm, $this->student->id, $this->course->id);
+        $cm = $this->get_cm($assign->cmid);
 
-        $this->assertCount(1, $items);
-        $this->assertFalse($items[0]['isassessment']);
+        $DB->insert_record('assign_grades', [
+            'assignment'    => $assign->id,
+            'userid'        => $this->student->id,
+            'timecreated'   => time(),
+            'timemodified'  => time(),
+            'grader'        => 2,
+            'grade'         => 15.0,
+            'attemptnumber' => 0,
+        ]);
+
+        $this->assertEquals('-', feedback_util::get_assign_feedback($cm, $this->student->id));
     }
 
     /**
-     * Tests that assessment feedback_type setting returns only the assessment row.
+     * Tests that an assignment with a grade and a feedback comment returns the comment.
      */
-    public function test_get_workshop_items_assessment_type_returns_one_item(): void {
-        set_config('workshop_feedback_type', 'assessment', 'report_individualized');
+    public function test_assign_with_feedback_returns_text(): void {
+        global $DB;
 
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
+        $assign = $this->getDataGenerator()->create_module('assign', [
             'course' => $this->course->id,
         ]);
-        $cm    = $this->get_cm($workshop->cmid);
-        $items = workshop_util::get_workshop_items($cm, $this->student->id, $this->course->id);
+        $cm = $this->get_cm($assign->cmid);
 
-        $this->assertCount(1, $items);
-        $this->assertTrue($items[0]['isassessment']);
+        $gradeid = $DB->insert_record('assign_grades', [
+            'assignment'    => $assign->id,
+            'userid'        => $this->student->id,
+            'timecreated'   => time(),
+            'timemodified'  => time(),
+            'grader'        => 2,
+            'grade'         => 15.0,
+            'attemptnumber' => 0,
+        ]);
+
+        $DB->insert_record('assignfeedback_comments', [
+            'assignment'    => $assign->id,
+            'grade'         => $gradeid,
+            'commenttext'   => 'Well done.',
+            'commentformat' => FORMAT_PLAIN,
+        ]);
+
+        $result = feedback_util::get_assign_feedback($cm, $this->student->id);
+        $this->assertStringContainsString('Well done.', $result);
     }
 
+    // Quiz feedback tests.
+
     /**
-     * Tests that each item contains the expected keys.
+     * Tests that a quiz with no grade record returns '-'.
      */
-    public function test_get_workshop_items_has_expected_keys(): void {
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
+    public function test_quiz_no_grade_returns_dash(): void {
+        $quiz = $this->getDataGenerator()->create_module('quiz', [
             'course' => $this->course->id,
         ]);
-        $cm    = $this->get_cm($workshop->cmid);
-        $items = workshop_util::get_workshop_items($cm, $this->student->id, $this->course->id);
-
-        foreach ($items as $item) {
-            $this->assertArrayHasKey('label', $item);
-            $this->assertArrayHasKey('gradestr', $item);
-            $this->assertArrayHasKey('feedbackstr', $item);
-            $this->assertArrayHasKey('closedatestr', $item);
-            $this->assertArrayHasKey('duedatestr', $item);
-            $this->assertArrayHasKey('completionicon', $item);
-            $this->assertArrayHasKey('isassessment', $item);
-        }
+        $cm = $this->get_cm($quiz->cmid);
+        $this->assertEquals('-', feedback_util::get_quiz_feedback($cm, $this->student->id));
     }
 
-    // get_submission_feedback tests.
+    // Gradebook fallback tests.
 
     /**
-     * Tests that a workshop with no submission returns '-'.
+     * Tests that a module with no grade item in the gradebook returns '-'.
      */
-    public function test_get_submission_feedback_no_submission_returns_dash(): void {
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
+    public function test_gradebook_no_grade_item_returns_dash(): void {
+        $page = $this->getDataGenerator()->create_module('page', [
             'course' => $this->course->id,
         ]);
-        $cm = $this->get_cm($workshop->cmid);
-        $this->assertEquals('-', workshop_util::get_submission_feedback($cm, $this->student->id));
-    }
-
-    // get_assessment_feedback tests.
-
-    /**
-     * Tests that a workshop with no assessments returns '-'.
-     */
-    public function test_get_assessment_feedback_no_assessments_returns_dash(): void {
-        $workshop = $this->getDataGenerator()->create_module('workshop', [
-            'course' => $this->course->id,
-        ]);
-        $cm = $this->get_cm($workshop->cmid);
-        $this->assertEquals('-', workshop_util::get_assessment_feedback($cm, $this->student->id));
+        $cm = $this->get_cm($page->cmid);
+        $this->assertEquals('-', feedback_util::get_gradebook_feedback($cm, $this->student->id));
     }
 }

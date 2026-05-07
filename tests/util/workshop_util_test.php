@@ -65,7 +65,7 @@ final class workshop_util_test extends \advanced_testcase {
         return $modinfo->get_cm($cmid);
     }
 
-    // get_workshop_items tests.
+    // Get_workshop_items tests.
 
     /**
      * Tests that a workshop returns two items by default (both submission and assessment).
@@ -133,7 +133,7 @@ final class workshop_util_test extends \advanced_testcase {
         }
     }
 
-    // get_submission_feedback tests.
+    // Get_submission_feedback tests.
 
     /**
      * Tests that a workshop with no submission returns '-'.
@@ -146,7 +146,7 @@ final class workshop_util_test extends \advanced_testcase {
         $this->assertEquals('-', workshop_util::get_submission_feedback($cm, $this->student->id));
     }
 
-    // get_assessment_feedback tests.
+    // Get_assessment_feedback tests.
 
     /**
      * Tests that a workshop with no assessments returns '-'.

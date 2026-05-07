@@ -65,7 +65,7 @@ final class view_stats_util_test extends \advanced_testcase {
         return $modinfo->get_cm($cmid);
     }
 
-    // format_view_range tests.
+    // Format_view_range tests.
 
     /**
      * Tests that zero views returns '-'.
@@ -108,7 +108,7 @@ final class view_stats_util_test extends \advanced_testcase {
         $this->assertStringNotContainsString('<br>', $result);
     }
 
-    // get_modtype_label tests.
+    // Get_modtype_label tests.
 
     /**
      * Tests that an unknown module name is returned as-is.
@@ -126,7 +126,7 @@ final class view_stats_util_test extends \advanced_testcase {
         $this->assertNotEquals('assign', $result);
     }
 
-    // get_view_stats tests.
+    // Get_view_stats tests.
 
     /**
      * Tests that a module with no log entries returns zero count.
@@ -135,8 +135,8 @@ final class view_stats_util_test extends \advanced_testcase {
         $assign = $this->getDataGenerator()->create_module('assign', [
             'course' => $this->course->id,
         ]);
-        $cm     = $this->get_cm($assign->cmid);
-        $stats  = view_stats_util::get_view_stats($cm, $this->student->id);
+        $cm    = $this->get_cm($assign->cmid);
+        $stats = view_stats_util::get_view_stats($cm, $this->student->id);
 
         $this->assertEquals(0, $stats['count']);
         $this->assertEquals(0, $stats['first']);
@@ -160,22 +160,22 @@ final class view_stats_util_test extends \advanced_testcase {
 
         foreach ([$ts1, $ts2] as $ts) {
             $DB->insert_record('logstore_standard_log', [
-                'eventname'       => '\mod_assign\event\course_module_viewed',
-                'component'       => 'mod_assign',
-                'action'          => 'viewed',
-                'target'          => 'course_module',
-                'userid'          => $this->student->id,
-                'contextid'       => $context->id,
-                'contextlevel'    => CONTEXT_MODULE,
+                'eventname'         => '\mod_assign\event\course_module_viewed',
+                'component'         => 'mod_assign',
+                'action'            => 'viewed',
+                'target'            => 'course_module',
+                'userid'            => $this->student->id,
+                'contextid'         => $context->id,
+                'contextlevel'      => CONTEXT_MODULE,
                 'contextinstanceid' => $cm->id,
-                'courseid'        => $this->course->id,
-                'timecreated'     => $ts,
-                'anonymous'       => 0,
-                'other'           => '',
-                'relateduserid'   => 0,
-                'realuserid'      => 0,
-                'ip'              => '127.0.0.1',
-                'origin'          => 'web',
+                'courseid'          => $this->course->id,
+                'timecreated'       => $ts,
+                'anonymous'         => 0,
+                'other'             => '',
+                'relateduserid'     => 0,
+                'realuserid'        => 0,
+                'ip'                => '127.0.0.1',
+                'origin'            => 'web',
             ]);
         }
 

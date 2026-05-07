@@ -43,7 +43,7 @@ final class category_util_test extends \advanced_testcase {
         $this->resetAfterTest();
     }
 
-    // get_category_path tests.
+    // Get_category_path tests.
 
     /**
      * Tests that a zero category ID returns an empty string.
@@ -108,7 +108,7 @@ final class category_util_test extends \advanced_testcase {
         $this->assertStringContainsString('Bottom', $result);
     }
 
-    // filter_courses_by_category tests.
+    // Filter_courses_by_category tests.
 
     /**
      * Tests that categoryid=0 returns all courses unchanged.
