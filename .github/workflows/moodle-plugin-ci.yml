@@ -6,7 +6,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:14
+        image: postgres:16
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -18,9 +18,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2', '8.3']
-        moodle-branch: ['MOODLE_500_STABLE']
+        php: ['8.2', '8.3', '8.4']
+        moodle-branch: ['MOODLE_500_STABLE', 'MOODLE_502_STABLE']
         database: [pgsql]
+        exclude:
+          # PHP 8.2 dropped in Moodle 5.2.
+          - php: '8.2'
+            moodle-branch: 'MOODLE_502_STABLE'
+          # PHP 8.4 not supported on Moodle 5.0.
+          - php: '8.4'
+            moodle-branch: 'MOODLE_500_STABLE'
 
     steps:
       - name: Check out repository code
@@ -97,9 +104,8 @@ jobs:
         run: moodle-plugin-ci mustache
 
       - name: Javascript Lint
-        # Known issue: Moodle 5.1.3 Gruntfile incompatible with Node 22
-        # AMD build files validated manually via terser
+        # Known issue: Moodle Gruntfile incompatible with Node 22.
+        # AMD build files validated manually via terser.
         continue-on-error: true
         if: ${{ always() }}
         run: moodle-plugin-ci grunt
-        

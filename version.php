@@ -25,10 +25,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Version du plugin au format AAAAMMJJXX (XX = incrément du jour).
-$plugin->version   = 2026050602;
+$plugin->version   = 2026050701;
 
-// Version minimale de Moodle requise (2025041400 = Moodle 5.0).
-$plugin->requires  = 2025041400;
+// Version minimale de Moodle requise (2025100600 = Moodle 5.1).
+$plugin->requires  = 2025100600;
 
 // Nom frankenstyle : type_nom — DOIT correspondre exactement au dossier.
 $plugin->component = 'report_individualized';
@@ -37,4 +37,4 @@ $plugin->component = 'report_individualized';
 $plugin->release   = '0.4.0';
 
 // Niveau de maturité : MATURITY_ALPHA, MATURITY_BETA, MATURITY_RC, MATURITY_STABLE.
-$plugin->maturity  = MATURITY_ALPHA;
+$plugin->maturity  = MATURITY_BETA;
