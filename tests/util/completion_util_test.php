@@ -20,12 +20,9 @@
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \report_individualized\util\completion_util
  */
 
 namespace report_individualized\util;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Test case for completion_util.
@@ -33,16 +30,17 @@ defined('MOODLE_INTERNAL') || die();
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers    \report_individualized\util\completion_util
  */
 final class completion_util_test extends \advanced_testcase {
-    /** @var \stdClass Cours de test. */
+    /** @var \stdClass Test course. */
     private \stdClass $course;
 
-    /** @var \stdClass Étudiant de test. */
+    /** @var \stdClass Test learner. */
     private \stdClass $student;
 
     /**
-     * Initialise un cours et un étudiant réutilisés dans tous les tests.
+     * Creates a course and a learner reused across all tests.
      */
     protected function setUp(): void {
         parent::setUp();
@@ -55,22 +53,20 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Retourne le cm_info d'un module à partir de son id de course-module.
+     * Returns the cm_info object for a given course-module ID.
      *
      * @param  int      $cmid   Course-module ID.
-     * @return \cm_info         Objet cm_info correspondant.
+     * @return \cm_info         Corresponding cm_info object.
      */
     private function get_cm(int $cmid): \cm_info {
         $modinfo = get_fast_modinfo($this->course, $this->student->id);
         return $modinfo->get_cm($cmid);
     }
 
-    // =========================================================
-    // ASSIGN
-    // =========================================================
+    // Assign tests.
 
     /**
-     * Teste qu'un devoir non soumis retourne false.
+     * Tests that an unsubmitted assignment returns false.
      */
     public function test_assign_not_submitted_returns_false(): void {
         $assign = $this->getDataGenerator()->create_module('assign', [
@@ -81,7 +77,7 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste qu'un devoir soumis retourne true.
+     * Tests that a submitted assignment returns true.
      */
     public function test_assign_submitted_returns_true(): void {
         global $DB;
@@ -102,7 +98,7 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste qu'un devoir en brouillon (draft) retourne false.
+     * Tests that a draft assignment returns false.
      */
     public function test_assign_draft_returns_false(): void {
         global $DB;
@@ -122,12 +118,10 @@ final class completion_util_test extends \advanced_testcase {
         $this->assertFalse(completion_util::is_complete($cm, $this->student->id));
     }
 
-    // =========================================================
-    // QUIZ
-    // =========================================================
+    // Quiz tests.
 
     /**
-     * Teste qu'un quiz sans tentative retourne false.
+     * Tests that a quiz with no attempt returns false.
      */
     public function test_quiz_no_attempt_returns_false(): void {
         $quiz = $this->getDataGenerator()->create_module('quiz', [
@@ -138,7 +132,7 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste qu'un quiz avec tentative terminée retourne true.
+     * Tests that a quiz with a finished attempt returns true.
      */
     public function test_quiz_finished_attempt_returns_true(): void {
         global $DB;
@@ -163,7 +157,7 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste qu'un quiz avec tentative en cours (inprogress) retourne false.
+     * Tests that a quiz with an in-progress attempt returns false.
      */
     public function test_quiz_inprogress_attempt_returns_false(): void {
         global $DB;
@@ -187,12 +181,10 @@ final class completion_util_test extends \advanced_testcase {
         $this->assertFalse(completion_util::is_complete($cm, $this->student->id));
     }
 
-    // =========================================================
-    // WORKSHOP
-    // =========================================================
+    // Workshop tests.
 
     /**
-     * Teste qu'un atelier sans soumission retourne false.
+     * Tests that a workshop with no submission returns false.
      */
     public function test_workshop_no_submission_returns_false(): void {
         $workshop = $this->getDataGenerator()->create_module('workshop', [
@@ -203,7 +195,7 @@ final class completion_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste qu'un atelier avec soumission retourne true.
+     * Tests that a workshop with a submission returns true.
      */
     public function test_workshop_with_submission_returns_true(): void {
         global $DB;

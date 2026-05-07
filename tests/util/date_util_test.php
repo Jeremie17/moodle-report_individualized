@@ -20,12 +20,9 @@
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \report_individualized\util\date_util
  */
 
 namespace report_individualized\util;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Test case for date_util.
@@ -33,24 +30,25 @@ defined('MOODLE_INTERNAL') || die();
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers    \report_individualized\util\date_util
  */
 final class date_util_test extends \advanced_testcase {
     /**
-     * Teste qu'un timestamp nul retourne '-'.
+     * Tests that a zero timestamp returns '-'.
      */
     public function test_format_datetime_zero_returns_dash(): void {
         $this->assertEquals('-', date_util::format_datetime(0));
     }
 
     /**
-     * Teste qu'un timestamp négatif retourne '-'.
+     * Tests that a negative timestamp returns '-'.
      */
     public function test_format_datetime_negative_returns_dash(): void {
         $this->assertEquals('-', date_util::format_datetime(-1));
     }
 
     /**
-     * Teste que le mode plaintext retourne une chaîne sans balise HTML.
+     * Tests that plaintext mode returns a string with no HTML tags.
      */
     public function test_format_datetime_plaintext_has_no_html(): void {
         $ts     = mktime(14, 30, 0, 4, 17, 2026);
@@ -60,7 +58,7 @@ final class date_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que le mode HTML contient la balise <br>.
+     * Tests that HTML mode contains a br tag.
      */
     public function test_format_datetime_html_contains_br(): void {
         $ts     = mktime(14, 30, 0, 4, 17, 2026);
@@ -69,7 +67,7 @@ final class date_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que le séparateur d'heure est 'h' et non ':'.
+     * Tests that the time separator is 'h' and not ':'.
      */
     public function test_format_datetime_uses_h_as_time_separator(): void {
         $ts     = mktime(14, 30, 0, 4, 17, 2026);
@@ -79,7 +77,7 @@ final class date_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que le mode plaintext contient l'année.
+     * Tests that plaintext mode contains the year.
      */
     public function test_format_datetime_plaintext_contains_year(): void {
         $ts     = mktime(14, 30, 0, 4, 17, 2026);

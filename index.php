@@ -36,17 +36,17 @@ use report_individualized\util\summary_util;
 use report_individualized\util\category_util;
 
 // -------------------------------------------------------------------------
-// 1. PARAMÈTRES DE L'URL
+// 1. URL PARAMETERS
 // -------------------------------------------------------------------------
 
 $userid     = optional_param('userid', 0, PARAM_INT);
 $courseid   = optional_param('courseid', 0, PARAM_INT);
 $categoryid = optional_param('categoryid', 0, PARAM_INT);
 
-// Filtres de date — reçus en format YYYY-MM-DD depuis l'input type="date".
-// PARAM_ALPHANUMEXT autorise les chiffres et les tirets (ex. "2026-04-13").
-// La conversion en timestamps Unix se fait via make_timestamp() qui respecte
-// le fuseau horaire de l'utilisateur Moodle.
+// Date filters received as YYYY-MM-DD strings from the date input.
+// PARAM_ALPHANUMEXT allows digits and hyphens (e.g. "2026-04-13").
+// Conversion to Unix timestamps uses make_timestamp() which respects
+// the Moodle user's timezone.
 $datefromstr = optional_param('datefrom', '', PARAM_ALPHANUMEXT);
 $datetostr   = optional_param('dateto', '', PARAM_ALPHANUMEXT);
 
@@ -63,7 +63,7 @@ if (!empty($datetostr) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $datetostr)) {
 }
 
 // -------------------------------------------------------------------------
-// 2. CONTEXTE ET PERMISSIONS
+// 2. CONTEXT AND PERMISSIONS
 // -------------------------------------------------------------------------
 
 $context = context_system::instance();
@@ -84,7 +84,7 @@ require_login();
 require_capability('report/individualized:view', $context);
 
 // -------------------------------------------------------------------------
-// 3. LECTURE DES COLONNES VISIBLES (paramètres admin)
+// 3. VISIBLE COLUMNS SETTINGS (admin parameters)
 // -------------------------------------------------------------------------
 
 $rescols = [];
@@ -94,13 +94,15 @@ foreach (['resourcename', 'availablefrom', 'viewed', 'viewrange', 'viewcount', '
 }
 
 $actcols = [];
-foreach (['activityname', 'availablefrom', 'duedate', 'grade', 'feedback', 'completion', 'opendate', 'closedate', 'viewrange', 'viewcount', 'estimatedduration'] as $col) {
+$activitycols = ['activityname', 'availablefrom', 'duedate', 'grade', 'feedback',
+    'completion', 'opendate', 'closedate', 'viewrange', 'viewcount', 'estimatedduration'];
+foreach ($activitycols as $col) {
     $val = get_config('report_individualized', 'actcol_' . $col);
     $actcols[$col] = ($val === false) ? true : (bool)(int)$val;
 }
 
 // -------------------------------------------------------------------------
-// 4. DONNÉES POUR LES FILTRES
+// 4. FILTER DATA
 // -------------------------------------------------------------------------
 
 $studentrole = $DB->get_record('role', ['shortname' => 'student']);
@@ -130,7 +132,7 @@ if ($studentrole) {
     }
 }
 
-// La liste des cours (pour le sélecteur) : champ category requis pour le filtrage.
+// Course list for the selector: the category field is required for filtering.
 $allcourses = [];
 if ($userid > 0) {
     $allcourses = enrol_get_users_courses($userid, true, 'id, fullname, shortname, category', 'fullname ASC');
@@ -138,7 +140,7 @@ if ($userid > 0) {
     $allcourses = $DB->get_records_select('course', 'id <> 1', [], 'fullname ASC', 'id, fullname, shortname, category');
 }
 
-// Filtre catégorie sur la liste des cours du sélecteur.
+// Apply category filter to the course selector list.
 if ($categoryid !== 0) {
     $allcourses = array_column(
         report_individualized_filter_courses_by_category($categoryid, array_values($allcourses)),
@@ -147,19 +149,19 @@ if ($categoryid !== 0) {
     );
 }
 
-// Options catégories pour le sélecteur (construites depuis les cours avec étudiants inscrits).
+// Category options for the selector (built from courses with enrolled learners).
 $categoryoptions = category_util::get_category_options($userid > 0 ? $userid : 0);
 
 // -------------------------------------------------------------------------
-// 5. RENDU HTML
+// 5. HTML RENDERING
 // -------------------------------------------------------------------------
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'report_individualized'));
 
-// Initialise le module AMD filters.js avec l'ID de contexte système et le categoryid courant.
-// Le module intercepte les changements de filtres et rafraîchit le rapport
-// en AJAX via core/ajax (get_filter_options) et core/fragment (rendu du rapport).
+// Initialises the AMD filters.js module with the system context ID and current categoryid.
+// The module intercepts filter changes and refreshes the report
+// via AJAX using core/ajax (get_filter_options) and core/fragment (report rendering).
 $PAGE->requires->js_call_amd(
     'report_individualized/filters',
     'init',
@@ -178,7 +180,7 @@ $pdfurl = new moodle_url('/report/individualized/export_pdf.php', [
 echo html_writer::start_div('report-individualized-filters');
 echo html_writer::start_div('report-individualized-filters-inner d-flex justify-content-between align-items-center');
 
-// Partie gauche : formulaire de filtres.
+// Left side: filter form.
 echo html_writer::start_tag('form', [
     'method' => 'get',
     'action' => new moodle_url('/report/individualized/index.php'),
@@ -275,8 +277,8 @@ echo html_writer::link(
 
 echo html_writer::end_tag('form');
 
-// Bouton PDF toujours dans le DOM — affiché/masqué par JS selon le filtre étudiant.
-// Le style inline initial reflète l'état serveur au chargement de la page.
+// PDF button always present in the DOM — shown/hidden by JS based on the learner filter.
+// The initial inline style reflects the server-side state on page load.
 echo html_writer::link(
     $pdfurl,
     get_string('exportpdf', 'report_individualized'),
@@ -290,12 +292,12 @@ echo html_writer::end_div(); // Closes filters-inner.
 echo html_writer::end_div(); // Closes report-individualized-filters.
 
 // -------------------------------------------------------------------------
-// 6. TABLEAUX
+// 6. TABLES
 // -------------------------------------------------------------------------
 
-// La div report-individualized-content est le conteneur AJAX.
-// Son contenu est remplacé par le fragment PHP lors des appels AJAX.
-// Lors du premier chargement, index.php le remplit directement.
+// The report-individualized-content div is the AJAX container.
+// Its content is replaced by the PHP fragment on AJAX calls.
+// On direct page load, index.php fills it directly.
 echo html_writer::start_div('', ['id' => 'report-individualized-content']);
 
 $userstoshow = [];
@@ -305,7 +307,7 @@ if ($userid > 0) {
     $userstoshow = array_values($allusers);
 }
 
-// En-têtes de colonnes construits avec <br> pour les titres multi-lignes.
+// Column headers built with <br> for multi-line titles.
 $connector      = get_string('columnheader_connector', 'report_individualized');
 $rheadertype    = get_string('resourcename_type', 'report_individualized')
     . $connector . '<br>'
@@ -325,12 +327,12 @@ if (!empty($userstoshow)) {
             3
         );
 
-        // Récupère les cours de l'étudiant en incluant le champ category pour le filtrage.
+        // Fetch the learner's courses including the category field for filtering.
         if ($courseid > 0) {
             $courses = [$courseid => get_course($courseid)];
         } else {
             $courses = enrol_get_users_courses($user->id, true, 'id, fullname, shortname, category', 'fullname ASC');
-            // Filtre catégorie sur les cours de l'étudiant.
+            // Apply category filter to the learner's courses.
             if ($categoryid !== 0) {
                 $courses = array_column(
                     category_util::filter_courses_by_category($categoryid, array_values($courses)),
@@ -358,7 +360,7 @@ if (!empty($userstoshow)) {
                 }
             }
 
-            // Pré-collecte de tous les CMs du cours pour le résumé global.
+            // Pre-collect all course CMs for the global course-level summary.
             $globalresources     = [];
             $globalactivities    = [];
             $globaltimefeedbacks = [];
@@ -409,8 +411,8 @@ if (!empty($userstoshow)) {
                 $dateto
             );
 
-            // Capture du rendu des sections dans un buffer.
-            // Le titre du cours n'est écrit que si le buffer n'est pas vide.
+            // Capture section output into a buffer.
+            // The course heading is only written if the buffer is non-empty.
             ob_start();
 
             foreach ($allsections as $section) {
@@ -418,7 +420,7 @@ if (!empty($userstoshow)) {
                     continue;
                 }
 
-                // Détection du feedback TIME — exclu des tableaux.
+                // Detect TIME feedback modules — excluded from the tables.
                 $timefeedbackcm = null;
                 $visiblecms     = [];
                 foreach ($cmsbysection[$section->section] as $cm) {
@@ -442,7 +444,7 @@ if (!empty($userstoshow)) {
                     }
                 }
 
-                // Filtrage par plage de dates.
+                // Apply date range filter.
                 if ($datefrom > 0 || $dateto > 0) {
                     $filtered = [];
                     foreach ($resources as $cm) {
@@ -479,12 +481,12 @@ if (!empty($userstoshow)) {
                     $activities = $filtered;
                 }
 
-                // Section 0 sans nom = masquée.
+                // Section 0 with no name is hidden.
                 if ($section->section === 0 && empty($section->name)) {
                     continue;
                 }
 
-                // Section vide après filtrage = masquée.
+                // Empty section after filtering is hidden.
                 if (empty($resources) && empty($activities)) {
                     continue;
                 }
@@ -555,8 +557,8 @@ if (!empty($userstoshow)) {
                         $rheaders[] = $headerduration;
                     }
 
-                    // L'ID unique inclut le numéro de section pour éviter les clashes
-                    // quand un cours a plusieurs sections sur la même page.
+                    // Unique table ID includes section number to avoid clashes
+                    // when a course has multiple sections on the same page.
                     $rtable = new \flexible_table(
                         'rpt-ind-res-' . $course->id . '-' . $user->id . '-s' . $section->section
                     );
@@ -669,7 +671,7 @@ if (!empty($userstoshow)) {
                     $atable->setup();
 
                     foreach ($activities as $cm) {
-                        // Trace d'ouverture.
+                        // Opening trace.
                         $openparams = [
                             'userid'   => $user->id,
                             'cmid'     => $cm->id,
@@ -706,7 +708,7 @@ if (!empty($userstoshow)) {
                             $dateto
                         );
 
-                        // CAS SPÉCIAL : WORKSHOP → deux lignes.
+                        // Special case: workshop renders two rows.
                         if ($cm->modname === 'workshop') {
                             $workshopitems = workshop_util::get_workshop_items($cm, $user->id, $course->id);
                             foreach ($workshopitems as $item) {
@@ -753,11 +755,12 @@ if (!empty($userstoshow)) {
                             continue;
                         }
 
-                        // CAS STANDARD.
+                        // Standard case.
                         if ($cm->modname === 'h5pactivity') {
                             $h5pclose = $DB->get_record_select(
                                 'logstore_standard_log',
-                                'userid = :userid AND contextinstanceid = :cmid AND component = :component AND action = :action',
+                                'userid = :userid AND contextinstanceid = :cmid'
+                                . ' AND component = :component AND action = :action',
                                 [
                                     'userid'    => $user->id,
                                     'cmid'      => $cm->id,
@@ -855,14 +858,14 @@ if (!empty($userstoshow)) {
                     $atable->finish_output();
                     echo html_writer::end_div();
                 }
-            } // fin foreach sections
+            } // End foreach sections.
 
             $courseoutput = ob_get_clean();
             if (!empty(trim($courseoutput))) {
                 echo html_writer::start_div('report-individualized-course-block');
                 echo $OUTPUT->heading(get_string('course', 'moodle') . ' : ' . format_string($course->fullname), 4);
 
-                // Chemin de catégorie affiché sous le titre du cours.
+                // Category path displayed below the course heading.
                 $catpath = category_util::get_category_path(
                     (int)($course->category ?? 0),
                     true
@@ -879,7 +882,7 @@ if (!empty($userstoshow)) {
                 echo $courseoutput;
                 echo html_writer::end_div();
             }
-        } // fin foreach courses
+        } // End foreach courses.
     }
 }
 echo html_writer::end_div(); // Closes report-individualized-content.

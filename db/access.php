@@ -25,29 +25,23 @@
 defined('MOODLE_INTERNAL') || die();
 
 $capabilities = [
-
-    // Capability principale : voir le rapport d'un étudiant.
+    // Main capability: view a learner report.
     'report/individualized:view' => [
-
-        // Texte affiché dans la page de gestion des rôles.
         'captype'      => 'read',
-
-        // Niveau de contexte où cette capability s'applique.
-        // CONTEXT_SYSTEM = administration globale du site.
+        // Context level where this capability applies.
+        // CONTEXT_SYSTEM = global site administration.
         'contextlevel' => CONTEXT_SYSTEM,
-
         // Default role archetypes for this capability.
         'archetypes'   => [
-            'manager'        => CAP_ALLOW, // Manager: yes.
-            'coursecreator'  => CAP_ALLOW, // Course creator: yes.
-            'editingteacher' => CAP_ALLOW, // Editing teacher: yes.
-            'teacher'        => CAP_ALLOW, // Non-editing teacher: yes.
-            'student'        => CAP_PREVENT, // Student: no (cannot view other students).
+            'manager'        => CAP_ALLOW,   // Manager: yes.
+            'coursecreator'  => CAP_ALLOW,   // Course creator: yes.
+            'editingteacher' => CAP_ALLOW,   // Editing teacher: yes.
+            'teacher'        => CAP_ALLOW,   // Non-editing teacher: yes.
+            'student'        => CAP_PREVENT, // Student: no (cannot view other learners).
             'guest'          => CAP_PREVENT, // Guest: no.
         ],
-        // clonepermissionsfrom: if the capability does not yet exist on a custom role,
-        // it inherits permissions from this core capability,
-        // avoiding the need to reconfigure all roles manually.
+        // If the capability does not yet exist on a custom role, permissions are
+        // inherited from this core capability to avoid manual reconfiguration.
         'clonepermissionsfrom' => 'moodle/site:viewreports',
     ],
 ];

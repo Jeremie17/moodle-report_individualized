@@ -24,8 +24,6 @@
 
 namespace report_individualized\util;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Utility class for consultation statistics, module type labels and modality.
  */
@@ -125,7 +123,7 @@ class view_stats_util {
         $modality = self::get_activity_modality($cm);
 
         // Cas workshop : extraire le suffixe "(travail remis)" ou "(évaluation)"
-        // depuis le label du grade book pour le placer en dernière ligne.
+        // From the gradebook label, placed on the last row.
         if ($cm->modname === 'workshop' && $itemlabel !== null) {
             $suffix = '';
             if (preg_match('/(\([^)]+\))\s*$/', $itemlabel, $matches)) {

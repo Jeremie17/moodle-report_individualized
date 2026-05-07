@@ -29,17 +29,15 @@
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 // Navigation hooks.
 
 /**
- * Ajoute un lien dans la navigation du profil utilisateur.
+ * Adds a link in the user profile navigation.
  *
- * @param  core_user\output\myprofile\tree $tree          Arbre de navigation du profil.
- * @param  stdClass                        $user          Utilisateur consulté.
- * @param  bool                            $iscurrentuser Vrai si c'est son propre profil.
- * @param  stdClass|null                   $course        Cours en contexte ou null.
+ * @param  core_user\output\myprofile\tree $tree          Profile navigation tree.
+ * @param  stdClass                        $user          Viewed user.
+ * @param  bool                            $iscurrentuser True if viewing own profile.
+ * @param  stdClass|null                   $course        Course context or null.
  * @return void
  */
 function report_individualized_myprofile_navigation(
@@ -67,11 +65,11 @@ function report_individualized_myprofile_navigation(
 }
 
 /**
- * Ajoute un lien dans la navigation d'un cours.
+ * Adds a link in the course navigation.
  *
- * @param  navigation_node $navigation Noeud de navigation du cours.
- * @param  stdClass        $course     Cours courant.
- * @param  context         $context    Contexte du cours.
+ * @param  navigation_node $navigation Course navigation node.
+ * @param  stdClass        $course     Current course.
+ * @param  context         $context    Course context.
  * @return void
  */
 function report_individualized_extend_navigation_course(
@@ -96,15 +94,15 @@ function report_individualized_extend_navigation_course(
 // AJAX fragment callback.
 
 /**
- * Fragment callback : rend le contenu du rapport via AJAX.
+ * Fragment callback: renders the report content via AJAX.
  *
- * Moodle exige que les callbacks de fragment soient définis dans lib.php
- * et suivent la convention pluginname_output_fragment_fragmentname().
- * Ce shell délègue immédiatement à report_fragment::render() pour garder
- * lib.php léger et la logique dans classes/.
+ * Moodle requires fragment callbacks to be defined in lib.php and to follow
+ * the pluginname_output_fragment_fragmentname() convention.
+ * This shell immediately delegates to report_fragment::render() to keep
+ * lib.php lightweight and logic in classes/.
  *
- * @param  array $args Paramètres transmis par core/fragment (JS).
- * @return string      HTML du rapport.
+ * @param  array $args Parameters passed by core/fragment (JS).
+ * @return string      Report HTML.
  */
 function report_individualized_output_fragment_report(array $args): string {
     return \report_individualized\output\report_fragment::render($args);

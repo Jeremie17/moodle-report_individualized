@@ -20,12 +20,9 @@
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \report_individualized\util\duration_util
  */
 
 namespace report_individualized\util;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Test case for duration_util.
@@ -33,24 +30,25 @@ defined('MOODLE_INTERNAL') || die();
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers    \report_individualized\util\duration_util
  */
 final class duration_util_test extends \advanced_testcase {
     /**
-     * Teste que les durées nulles ou négatives retournent '-'.
+     * Tests that a zero duration returns '-'.
      */
     public function test_format_duration_zero_returns_dash(): void {
         $this->assertEquals('-', duration_util::format_duration(0));
     }
 
     /**
-     * Teste qu'une durée négative retourne '-'.
+     * Tests that a negative duration returns '-'.
      */
     public function test_format_duration_negative_returns_dash(): void {
         $this->assertEquals('-', duration_util::format_duration(-5));
     }
 
     /**
-     * Teste le formatage en minutes seules (< 60 min).
+     * Tests formatting of minutes only (less than 60 min).
      */
     public function test_format_duration_minutes_only(): void {
         $this->assertEquals('30 min', duration_util::format_duration(30));
@@ -59,7 +57,7 @@ final class duration_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste le formatage en heures rondes (sans minutes).
+     * Tests formatting of exact hours (no remaining minutes).
      */
     public function test_format_duration_exact_hours(): void {
         $this->assertEquals('1h', duration_util::format_duration(60));
@@ -68,7 +66,7 @@ final class duration_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste le formatage mixte heures + minutes avec zéro pad.
+     * Tests mixed hours and minutes formatting with zero-padding.
      */
     public function test_format_duration_hours_and_minutes(): void {
         $this->assertEquals('1h30', duration_util::format_duration(90));

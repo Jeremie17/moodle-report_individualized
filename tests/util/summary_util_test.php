@@ -20,12 +20,9 @@
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- * @covers    \report_individualized\util\summary_util
  */
 
 namespace report_individualized\util;
-
-defined('MOODLE_INTERNAL') || die();
 
 /**
  * Test case for summary_util.
@@ -33,16 +30,17 @@ defined('MOODLE_INTERNAL') || die();
  * @package   report_individualized
  * @copyright 2025 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @covers    \report_individualized\util\summary_util
  */
 final class summary_util_test extends \advanced_testcase {
-    /** @var \stdClass Cours de test. */
+    /** @var \stdClass Test course. */
     private \stdClass $course;
 
-    /** @var \stdClass Étudiant de test. */
+    /** @var \stdClass Test learner. */
     private \stdClass $student;
 
     /**
-     * Initialise un cours et un étudiant réutilisés dans tous les tests.
+     * Creates a course and a learner reused across all tests.
      */
     protected function setUp(): void {
         parent::setUp();
@@ -55,22 +53,20 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Retourne le cm_info d'un module à partir de son cmid.
+     * Returns the cm_info object for a given course-module ID.
      *
      * @param  int      $cmid Course-module ID.
-     * @return \cm_info       Objet cm_info correspondant.
+     * @return \cm_info       Corresponding cm_info object.
      */
     private function get_cm(int $cmid): \cm_info {
         $modinfo = get_fast_modinfo($this->course, $this->student->id);
         return $modinfo->get_cm($cmid);
     }
 
-    // =========================================================
-    // compute() — structure du retour
-    // =========================================================
+    // compute() return structure tests.
 
     /**
-     * Teste que compute() retourne les 5 clés attendues.
+     * Tests that compute() returns the 5 expected keys.
      */
     public function test_compute_returns_expected_keys(): void {
         $result = summary_util::compute([], [], [], $this->student->id);
@@ -82,7 +78,7 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que compute() avec des listes vides retourne null pour les métriques calculées.
+     * Tests that compute() with empty lists returns null for calculated metrics.
      */
     public function test_compute_empty_lists_returns_nulls(): void {
         $result = summary_util::compute([], [], [], $this->student->id);
@@ -91,12 +87,10 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertNull($result['resourcesviewed']);
     }
 
-    // =========================================================
-    // compute_completion_rate (via compute)
-    // =========================================================
+    // compute_completion_rate tests (via compute).
 
     /**
-     * Teste le taux de complétion avec un devoir non soumis → 0/1 (0%).
+     * Tests completion rate with an unsubmitted assignment: 0/1 (0%).
      */
     public function test_completion_rate_not_submitted(): void {
         $assign = $this->getDataGenerator()->create_module('assign', [
@@ -112,7 +106,7 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste le taux de complétion avec un devoir soumis → 1/1 (100%).
+     * Tests completion rate with a submitted assignment: 1/1 (100%).
      */
     public function test_completion_rate_submitted(): void {
         global $DB;
@@ -138,7 +132,7 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste le taux de complétion avec 2 activités dont 1 complétée → 1/2 (50%).
+     * Tests completion rate with 2 activities and 1 completed: 1/2 (50%).
      */
     public function test_completion_rate_partial(): void {
         global $DB;
@@ -167,12 +161,10 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertEquals(50, $cr['pct']);
     }
 
-    // =========================================================
-    // compute_resources_viewed (via compute)
-    // =========================================================
+    // compute_resources_viewed tests (via compute).
 
     /**
-     * Teste les ressources vues avec aucune consultation → 0/1.
+     * Tests resources viewed with no views recorded: 0/1.
      */
     public function test_resources_viewed_none_viewed(): void {
         $page   = $this->getDataGenerator()->create_module('page', [
@@ -186,12 +178,10 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertEquals(1, $rv['total']);
     }
 
-    // =========================================================
-    // render_pdf
-    // =========================================================
+    // render_pdf tests.
 
     /**
-     * Teste que render_pdf retourne une chaîne vide si aucune métrique.
+     * Tests that render_pdf returns an empty string when all metrics are null.
      */
     public function test_render_pdf_empty_summary(): void {
         $summary = [
@@ -205,7 +195,7 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que render_pdf inclut le taux de complétion formaté.
+     * Tests that render_pdf includes the formatted completion rate.
      */
     public function test_render_pdf_includes_completion_rate(): void {
         $summary = [
@@ -221,7 +211,7 @@ final class summary_util_test extends \advanced_testcase {
     }
 
     /**
-     * Teste que render_pdf sépare les métriques par ' | '.
+     * Tests that render_pdf separates metrics with ' | '.
      */
     public function test_render_pdf_separator(): void {
         $summary = [

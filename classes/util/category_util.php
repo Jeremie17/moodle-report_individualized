@@ -24,8 +24,6 @@
 
 namespace report_individualized\util;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Helpers for course category filtering and path display.
  */

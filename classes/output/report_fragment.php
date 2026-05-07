@@ -27,8 +27,6 @@
 
 namespace report_individualized\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 use report_individualized\util\date_util;
 use report_individualized\util\view_stats_util;
 use report_individualized\util\completion_util;
@@ -51,13 +49,13 @@ class report_fragment
      * Validates, queries, and renders all sections/tables for the selected filters.
      *
      * @param  array $args {
-     *     userid     => int    Étudiant sélectionné (0 = tous).
-     *     courseid   => int    Cours sélectionné (0 = tous).
-     *     categoryid => int    Catégorie sélectionnée (0 = toutes, -1 = sans sous-catégorie).
-     *     datefrom   => string Date de début YYYY-MM-DD ('' = pas de filtre).
-     *     dateto     => string Date de fin   YYYY-MM-DD ('' = pas de filtre).
+     *     userid     => int    Selected learner (0 = all).
+     *     courseid   => int    Selected course (0 = all).
+     *     categoryid => int    Selected category (0 = all, -1 = no subcategory).
+     *     datefrom   => string Start date YYYY-MM-DD ('' = no filter).
+     *     dateto     => string End date   YYYY-MM-DD ('' = no filter).
      * }
-     * @return string HTML du rapport.
+     * @return string Report HTML.
      */
     public static function render(array $args): string {
         global $DB, $OUTPUT, $CFG;
@@ -152,12 +150,12 @@ class report_fragment
                 3
             );
 
-            // Récupère les cours avec le champ category pour le filtrage.
+            // Fetch courses including the category field for filtering.
             if ($courseid > 0) {
                 $courses = [$courseid => get_course($courseid)];
             } else {
                 $courses = enrol_get_users_courses($user->id, true, 'id, fullname, shortname, category');
-                // Filtre catégorie.
+                // Apply category filter.
                 if ($categoryid !== 0) {
                     $courses = array_column(
                         category_util::filter_courses_by_category($categoryid, array_values($courses)),
@@ -183,7 +181,7 @@ class report_fragment
                     }
                 }
 
-                // Pré-collecte de tous les CMs du cours pour le résumé global.
+                // Pre-collect all course CMs for the global course-level summary.
                 $globalresources     = [];
                 $globalactivities    = [];
                 $globaltimefeedbacks = [];
@@ -241,7 +239,7 @@ class report_fragment
                         continue;
                     }
 
-                    // Détection feedback TIME.
+                    // Detect TIME feedback modules — excluded from the tables.
                     $timefeedbackcm = null;
                     $visiblecms     = [];
                     foreach ($cmsbysection[$section->section] as $cm) {
@@ -265,7 +263,7 @@ class report_fragment
                         }
                     }
 
-                    // Filtrage par plage de dates.
+                    // Apply date range filter.
                     if ($datefrom > 0 || $dateto > 0) {
                         $filtered = [];
                         foreach ($resources as $cm) {
@@ -374,8 +372,8 @@ class report_fragment
                             $rheaders[] = $headerduration;
                         }
 
-                        // L'ID unique inclut le numéro de section pour éviter les clashes
-                        // quand un cours a plusieurs sections sur la même page AJAX.
+                        // Unique table ID includes section number to avoid clashes
+                        // when a course has multiple sections on the same AJAX page.
                         $rtable = new \flexible_table(
                             'rpt-ind-res-' . $course->id . '-' . $user->id . '-s' . $section->section
                         );
@@ -567,7 +565,8 @@ class report_fragment
                             if ($cm->modname === 'h5pactivity') {
                                 $h5pclose = $DB->get_record_select(
                                     'logstore_standard_log',
-                                    'userid = :userid AND contextinstanceid = :cmid AND component = :component AND action = :action',
+                                    'userid = :userid AND contextinstanceid = :cmid'
+                                    . ' AND component = :component AND action = :action',
                                     [
                                         'userid'    => $user->id,
                                         'cmid'      => $cm->id,
@@ -664,14 +663,14 @@ class report_fragment
                         $atable->finish_output();
                         echo html_writer::end_div();
                     }
-                } // fin foreach sections
+                } // End foreach sections.
 
                 $courseoutput = ob_get_clean();
                 if (!empty(trim($courseoutput))) {
                     echo html_writer::start_div('report-individualized-course-block');
                     echo $OUTPUT->heading(get_string('course', 'moodle') . ' : ' . format_string($course->fullname), 4);
 
-                    // Chemin de catégorie affiché sous le titre du cours.
+                    // Category path displayed below the course heading.
                     $catpath = category_util::get_category_path(
                         (int)($course->category ?? 0),
                         true
@@ -688,8 +687,8 @@ class report_fragment
                     echo $courseoutput;
                     echo html_writer::end_div();
                 }
-            } // fin foreach courses
-        } // fin foreach users
+            } // End foreach courses.
+        } // End foreach users.
 
         return ob_get_clean();
     }

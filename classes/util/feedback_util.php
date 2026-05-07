@@ -24,8 +24,6 @@
 
 namespace report_individualized\util;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Utility class for retrieving teacher feedback across module types.
  *
