@@ -24,6 +24,8 @@
 
 namespace report_individualized\util;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Test case for summary_util.
  *
@@ -63,7 +65,7 @@ final class summary_util_test extends \advanced_testcase {
         return $modinfo->get_cm($cmid);
     }
 
-    // compute() return structure tests.
+    // Compute() return structure tests.
 
     /**
      * Tests that compute() returns the 5 expected keys.
@@ -87,7 +89,7 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertNull($result['resourcesviewed']);
     }
 
-    // compute_completion_rate tests (via compute).
+    // Compute_completion_rate tests (via compute).
 
     /**
      * Tests completion rate with an unsubmitted assignment: 0/1 (0%).
@@ -161,7 +163,7 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertEquals(50, $cr['pct']);
     }
 
-    // compute_resources_viewed tests (via compute).
+    // Compute_resources_viewed tests (via compute).
 
     /**
      * Tests resources viewed with no views recorded: 0/1.
@@ -178,7 +180,7 @@ final class summary_util_test extends \advanced_testcase {
         $this->assertEquals(1, $rv['total']);
     }
 
-    // render_pdf tests.
+    // Render_pdf tests.
 
     /**
      * Tests that render_pdf returns an empty string when all metrics are null.

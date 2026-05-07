@@ -33,10 +33,10 @@ $capabilities = [
         'contextlevel' => CONTEXT_SYSTEM,
         // Default role archetypes for this capability.
         'archetypes'   => [
-            'manager'        => CAP_ALLOW,   // Manager: yes.
-            'coursecreator'  => CAP_ALLOW,   // Course creator: yes.
-            'editingteacher' => CAP_ALLOW,   // Editing teacher: yes.
-            'teacher'        => CAP_ALLOW,   // Non-editing teacher: yes.
+            'manager'        => CAP_ALLOW, // Manager: yes.
+            'coursecreator'  => CAP_ALLOW, // Course creator: yes.
+            'editingteacher' => CAP_ALLOW, // Editing teacher: yes.
+            'teacher'        => CAP_ALLOW, // Non-editing teacher: yes.
             'student'        => CAP_PREVENT, // Student: no (cannot view other learners).
             'guest'          => CAP_PREVENT, // Guest: no.
         ],

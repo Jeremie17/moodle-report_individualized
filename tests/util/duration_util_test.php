@@ -24,6 +24,8 @@
 
 namespace report_individualized\util;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Test case for duration_util.
  *

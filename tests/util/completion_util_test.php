@@ -24,6 +24,8 @@
 
 namespace report_individualized\util;
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Test case for completion_util.
  *
@@ -85,13 +87,13 @@ final class completion_util_test extends \advanced_testcase {
             'course' => $this->course->id,
         ]);
         $DB->insert_record('assign_submission', [
-            'assignment' => $assign->id,
-            'userid'     => $this->student->id,
-            'status'     => 'submitted',
-            'timecreated' => time(),
-            'timemodified' => time(),
+            'assignment'    => $assign->id,
+            'userid'        => $this->student->id,
+            'status'        => 'submitted',
+            'timecreated'   => time(),
+            'timemodified'  => time(),
             'attemptnumber' => 0,
-            'latest' => 1,
+            'latest'        => 1,
         ]);
         $cm = $this->get_cm($assign->cmid);
         $this->assertTrue(completion_util::is_complete($cm, $this->student->id));
@@ -106,13 +108,13 @@ final class completion_util_test extends \advanced_testcase {
             'course' => $this->course->id,
         ]);
         $DB->insert_record('assign_submission', [
-            'assignment' => $assign->id,
-            'userid'     => $this->student->id,
-            'status'     => 'draft',
-            'timecreated' => time(),
-            'timemodified' => time(),
+            'assignment'    => $assign->id,
+            'userid'        => $this->student->id,
+            'status'        => 'draft',
+            'timecreated'   => time(),
+            'timemodified'  => time(),
             'attemptnumber' => 0,
-            'latest' => 1,
+            'latest'        => 1,
         ]);
         $cm = $this->get_cm($assign->cmid);
         $this->assertFalse(completion_util::is_complete($cm, $this->student->id));
