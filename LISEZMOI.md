@@ -12,7 +12,7 @@ Développé par Ifrass (2026–2027).
 
 | Dépendance | Version |
 |---|---|
-| Moodle | 5.0 ou supérieur (build 2025041400+) |
+| Moodle | 5.1 or higher (build 2025100600+)|
 | PHP | 8.2 ou supérieur |
 | Node.js | 22 (exécution) — voir [Limitations connues](#limitations-connues) pour la compilation AMD |
 
@@ -141,7 +141,7 @@ php /chemin/vers/moodle/vendor/bin/phpunit \
     --testdox
 ```
 
-Les tests couvrent : `duration_util`, `date_util`, `completion_util`, `summary_util`.
+Les tests couvrent : `duration_util`, `date_util`, `completion_util`, `summary_util` , `view_stats_util`, `feedback_util`, `category_util`, `workshop_util`.
 
 ---
 

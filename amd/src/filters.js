@@ -220,8 +220,6 @@ define([
                 courseSelect.value = '0';
                 if (dateFrom) { dateFrom.value = ''; }
                 if (dateTo) { dateTo.value = ''; }
-                if (dateFrom) { dateFrom.value = ''; }
-                if (dateTo) { dateTo.value = ''; }
                 handleChange();
             });
         }
