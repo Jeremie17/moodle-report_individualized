@@ -4,7 +4,7 @@ Plugin de rapport individualisé étudiant pour Moodle 5.
 
 Génère un rapport détaillé par étudiant de son activité au sein d'un cours — exportable en PDF — destiné à la soumission aux organismes financeurs OPCO.
 
-Développé par Ifrass (2025–2026).
+Développé par Ifrass (2026–2027).
 
 ---
 

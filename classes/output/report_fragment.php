@@ -373,7 +373,7 @@ class report_fragment
                         }
 
                         // Unique table ID includes section number to avoid clashes
-                        // when a course has multiple sections on the same AJAX page.
+                        // When a course has multiple sections on the same AJAX page.
                         $rtable = new \flexible_table(
                             'rpt-ind-res-' . $course->id . '-' . $user->id . '-s' . $section->section
                         );

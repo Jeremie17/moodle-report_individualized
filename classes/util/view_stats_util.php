@@ -29,10 +29,10 @@ namespace report_individualized\util;
  */
 class view_stats_util {
     /**
-     * Retourne le nom localisé d'un module de cours.
+     * Returns the localized name of a course module.
      *
-     * @param  string $modname Nom machine du module (ex. 'assign', 'quiz').
-     * @return string          Nom dans la langue courante de l'interface.
+     * @param  string $modname Module machine name (ex. 'assign', 'quiz').
+     * @return string          Name in the interface's current language.
      */
     public static function get_modtype_label(string $modname): string {
         if (get_string_manager()->string_exists('modulename', $modname)) {
@@ -42,21 +42,10 @@ class view_stats_util {
     }
 
     /**
-     * Retourne la modalité pédagogique d'un module depuis les custom fields.
+     * Returns the teaching method of a module from the custom fields.
      *
-     * Étape par étape :
-     *  1. On interroge customfield_data (valeur choisie) + customfield_field (définition).
-     *  2. La valeur choisie est un entier base-1 stocké dans intvalue.
-     *     (ex. 2 = deuxième option de la liste — Moodle indexe à partir de 1, pas 0)
-     *  3. La liste des options est dans configdata (JSON, clé "options",
-     *     valeurs séparées par \r\n).
-     *  4. On décode, on découpe, on retourne l'option à l'index choisi.
-     *
-     * IGNORE_MISSING = retourne false si aucune ligne, sans lever d'exception.
-     * C'est l'équivalent du .find() JS qui retourne undefined plutôt que de planter.
-     *
-     * @param  \cm_info $cm Module de cours.
-     * @return string       Modalité pédagogique ou '-'.
+     * @param  \cm_info $cm Course module.
+     * @return string       Teaching method or '-'.
      */
     public static function get_activity_modality(\cm_info $cm): string {
         global $DB;
@@ -76,41 +65,29 @@ class view_stats_util {
             return '-';
         }
 
-        // Configdata is a JSON string: {"options":"Recherche personnelle\r\nDébat\r\n..."}.
+        // Configdata is a JSON string.
         $config = json_decode($rec->configdata);
 
         if (!$config || empty($config->options)) {
             return '-';
         }
 
-        // On découpe la chaîne d'options par les sauts de ligne.
+        // The chain of options is broken up by line breaks.
         $options = preg_split('/\r\n|\r|\n/', $config->options);
 
-        // Moodle stocke l'index en base-1 → on soustrait 1 pour PHP (base-0).
+        // Moodle stores the index in base-1 → we subtract 1 for PHP (base-0).
         $index = (int)$rec->intvalue - 1;
 
         return isset($options[$index]) ? trim($options[$index]) : '-';
     }
 
     /**
-     * Construit le libellé affiché dans la colonne "Type / Modalité pédagogique".
+     * Construct the label displayed in the "Type / Teaching Method" column.
      *
-     * Format HTML (pour le tableau web) :
-     *  Ligne 1 : type du module (ex. "Devoir")
-     *  Ligne 2 : titre de l'activité/ressource (ex. "Mathématiques")
-     *  Ligne 3 : modalité pédagogique si renseignée (ex. "Recherche personnelle")
-     *  Ligne 4 : suffixe workshop si présent (ex. "(travail remis)")
-     *
-     * Format texte brut (pour le PDF) : les lignes sont séparées par " | ".
-     *
-     * Pour le workshop, $itemlabel contient le nom du grade item Moodle,
-     * ex. "Test atelier (travail remis)". On extrait le suffixe entre parenthèses
-     * pour le placer sur une ligne dédiée.
-     *
-     * @param  \cm_info    $cm        Module de cours.
-     * @param  string|null $itemlabel Label grade book (workshop uniquement).
-     * @param  bool        $plaintext Vrai = texte brut (export PDF).
-     * @return string                 Libellé multi-lignes.
+     * @param  \cm_info    $cm        Course module.
+     * @param  string|null $itemlabel Label grade book (workshop only).
+     * @param  bool        $plaintext True = plain text (PDF export).
+     * @return string                 Multi-line label.
      */
     public static function get_activity_label(
         \cm_info $cm,
@@ -122,7 +99,7 @@ class view_stats_util {
         $name     = format_string($cm->name);
         $modality = self::get_activity_modality($cm);
 
-        // Cas workshop : extraire le suffixe "(travail remis)" ou "(évaluation)"
+        // Workshop case: extract the suffix "(submitted work)" or "(evaluation)"
         // From the gradebook label, placed on the last row.
         if ($cm->modname === 'workshop' && $itemlabel !== null) {
             $suffix = '';
@@ -140,7 +117,7 @@ class view_stats_util {
             return implode($sep, $lines);
         }
 
-        // Cas standard.
+        // Standard case.
         $lines = [$type, $name];
         if ($modality !== '-') {
             $lines[] = $modality;
@@ -149,12 +126,12 @@ class view_stats_util {
     }
 
     /**
-     * Retourne les statistiques de consultation d'un module par un étudiant.
+     * Returns the statistics for a module's usage by a student.
      *
-     * @param  \cm_info $cm       Module de cours.
-     * @param  int      $userid   Identifiant étudiant.
-     * @param  int      $datefrom Timestamp de début (0 = pas de limite).
-     * @param  int      $dateto   Timestamp de fin   (0 = pas de limite).
+     * @param  \cm_info $cm       Course module.
+     * @param  int      $userid   Student ID.
+     * @param  int      $datefrom Timestamp beginning (0 = no limit).
+     * @param  int      $dateto   Timestamp end   (0 = no limit).
      * @return array              ['count' => int, 'first' => int, 'last' => int]
      */
     public static function get_view_stats(
@@ -202,11 +179,11 @@ class view_stats_util {
     }
 
     /**
-     * Formate une plage de dates de consultation.
+     * Formats a range of consultation dates.
      *
-     * @param  array $stats Tableau issu de get_view_stats().
-     * @param  bool  $plaintext Vrai = texte brut (export PDF).
-     * @return string           Plage formatée.
+     * @param  array $stats Table from get_view_stats().
+     * @param  bool  $plaintext True = plain text (PDF export).
+     * @return string           Fromated range.
      */
     public static function format_view_range(array $stats, bool $plaintext = false): string {
         if ($stats['count'] === 0) {

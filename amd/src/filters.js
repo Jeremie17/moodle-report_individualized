@@ -123,7 +123,7 @@ define([
     });
 
     /**
-     * Met à jour le href du bouton PDF principal (sticky bar) avec les filtres actifs.
+     * Updates the href of the main PDF button (sticky bar) with the active filters.
      *
      * @param {object} params {userid, courseid, categoryid, datefrom, dateto}
      */
@@ -174,11 +174,11 @@ define([
             return;
         }
 
-        // Valeur initiale du filtre catégorie transmise par PHP.
+        // Initial value of the category filter passed by PHP.
 
         /**
-         * Déclenché à chaque changement de filtre.
-         * Rafraîchit le rapport, le bouton PDF, puis les selects.
+         * Triggered every time the filter is changed.
+         * Refresh the report, the PDF button, then the selects.
          */
         function handleChange() {
             if (isUpdatingSelects) {
@@ -194,16 +194,16 @@ define([
             );
         }
 
-        // --- Catégorie change ---
+        // Category change.
         categorySelect.addEventListener('change', handleChange);
 
-        // --- Étudiant change ---
+        // Student change.
         userSelect.addEventListener('change', handleChange);
 
-        // --- Cours change ---
+        // Course change.
         courseSelect.addEventListener('change', handleChange);
 
-        // --- Bouton Appliquer ---
+        // Apply button.
         if (applyBtn) {
             applyBtn.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -211,7 +211,7 @@ define([
             });
         }
 
-        // --- Bouton Réinitialiser ---
+        // Reset button.
         if (resetLink) {
             resetLink.addEventListener('click', function (e) {
                 e.preventDefault();

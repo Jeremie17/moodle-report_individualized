@@ -29,17 +29,17 @@ namespace report_individualized\util;
  */
 class date_util {
     /**
-     * Formate un timestamp en date + heure sur deux lignes.
+     * Formats a timestamp as a date and time on two lines.
      *
-     * Format affiché :
-     *  - Ligne 1 : "14 April 2026" (chiffre + mois + année, sans jour de la semaine)
-     *  - Ligne 2 : "14h30" (heure avec h à la place du séparateur :)
+     * Displayed format:
+     *  - Line 1: "14 April 2026" (number + month + year, without day of the week)
+     *  - Line 2: "14:30" (time with "h" instead of the separator :)
      *
-     * Le mode $plaintext est utilisé pour le PDF (pas de balise HTML).
+     * The $plaintext mode is used for PDFs (no HTML tags).
      *
      * @param  int  $ts        Timestamp Unix.
-     * @param  bool $plaintext Vrai = texte brut sans HTML (export PDF).
-     * @return string          Date formatée ou '-'.
+     * @param  bool $plaintext True = Plain text without HTML (PDF export).
+     * @return string          Formatted date or '-'.
      */
     public static function format_datetime(int $ts, bool $plaintext = false): string {
         if ($ts <= 0) {
@@ -57,13 +57,13 @@ class date_util {
     }
 
     /**
-     * Lit les dates de disponibilité issues des restrictions d'accès Moodle (JSON availability).
+     * Reads the availability dates resulting from Moodle access restrictions(JSON availability).
      *
-     * Parse le JSON course_modules.availability pour extraire les conditions de type "date".
-     * Retourne ['from' => timestamp, 'to' => timestamp], chaque valeur vaut 0 si absente.
+     * Parse the JSON course_modules.availability to extract conditions of type "date".
+     * Return ['from' => timestamp, 'to' => timestamp], each value is 0 if absent.
      *
-     * Utilisée par get_configured_opendate_timestamp() et get_configured_closedate_timestamp()
-     * pour les modules sans paramètre de disponibilité natif (ex : h5pactivity).
+     * Used by get_configured_opendate_timestamp() and get_configured_closedate_timestamp()
+     * for modules without native availability settings (ex : h5pactivity).
      *
      * @param  \cm_info $cm Module de cours.
      * @return int[]        ['from' => int, 'to' => int].
@@ -92,17 +92,17 @@ class date_util {
     }
 
     /**
-     * Retourne le timestamp de la date d'ouverture configurée par l'enseignant.
+     * Return the timestamp of the opening date set by the teacher.
      *
-     * Consulte uniquement les paramètres du module (tables assign, quiz, workshop).
-     * Pour h5pactivity, lit les restrictions d'accès (JSON availability).
-     * Retourne 0 si aucune date n'est configurée.
+     * View only the module settings (tables assign, quiz, workshop).
+     * For h5pactivity, reads the access restrictions (JSON availability).
+     * Return 0 if no date is configured.
      *
-     * Utilisée par :
+     * Used by :
      *  - report_individualized_get_module_availablefrom_timestamp()
      *
-     * @param  \cm_info $cm Module de cours.
-     * @return int          Timestamp Unix ou 0.
+     * @param  \cm_info $cm Course module.
+     * @return int          Timestamp Unix or 0.
      */
     public static function get_configured_opendate_timestamp(\cm_info $cm): int {
         global $DB;
@@ -138,14 +138,14 @@ class date_util {
     }
 
     /**
-     * Retourne le timestamp de la date de fermeture configurée par l'enseignant.
+     * Returns the timestamp of the closing date configured by the teacher.
      *
-     * Consulte uniquement les paramètres du module (tables assign, quiz).
-     * Pour h5pactivity, lit les restrictions d'accès (JSON availability).
-     * Le workshop est exclu : ses dates sont gérées dans workshop_util.
-     * Retourne 0 si aucune date n'est configurée.
+     * Only checks module settings (assign tables, quiz).
+     * For h5pactivity, reads access restrictions (JSON availability).
+     * The workshop is excluded: its dates are managed in workshop_util.
+     * Returns 0 if no dates are configured.
      *
-     * Utilisée par :
+     * Used by :
      *  - get_module_duedate_timestamp()
      *
      * @param  \cm_info $cm Module de cours.
@@ -184,9 +184,9 @@ class date_util {
      * Utilisée par :
      *  - get_module_duedate_timestamp()
      *
-     * @param  \cm_info $cm     Module de cours.
-     * @param  int      $userid Identifiant étudiant.
-     * @return int              Timestamp Unix ou 0.
+     * @param  \cm_info $cm     Course module.
+     * @param  int      $userid Student ID.
+     * @return int              Timestamp Unix or 0.
      */
     public static function get_grade_timemodified(\cm_info $cm, int $userid): int {
         global $DB;
@@ -215,14 +215,14 @@ class date_util {
     }
 
     /**
-     * Retourne le timestamp du feedback enseignant sur un devoir (assign).
+     * Returns the timestamp of the teacher feedback on an assignment.
      *
-     * Utilisée par :
+     * Used by :
      *  - get_module_duedate_timestamp()
      *
-     * @param  \cm_info $cm     Module de cours.
-     * @param  int      $userid Identifiant étudiant.
-     * @return int              Timestamp Unix ou 0.
+     * @param  \cm_info $cm     Course module.
+     * @param  int      $userid Student ID.
+     * @return int              Timestamp Unix or 0.
      */
     public static function get_assign_feedback_timestamp(\cm_info $cm, int $userid): int {
         global $DB;
@@ -257,12 +257,12 @@ class date_util {
     }
 
     /**
-     * Retourne le timestamp de la date d'ouverture effective d'un module.
+     * Returns the timestamp of the effective opening date of a module.
      *
-     * Source unique de vérité pour l'affichage ET le filtrage.
+     * Single source of truth for display AND filtering.
      *
-     * @param  \cm_info $cm Module de cours.
-     * @return int          Timestamp Unix ou 0.
+     * @param  \cm_info $cm Course module.
+     * @return int          Timestamp Unix or 0.
      */
     public static function get_module_availablefrom_timestamp(\cm_info $cm): int {
         $ts = self::get_configured_opendate_timestamp($cm);
@@ -273,11 +273,11 @@ class date_util {
     }
 
     /**
-     * Retourne la date d'ouverture effective d'un module (formatée sur deux lignes).
+     * Returns the effective opening date of a module (formatted on two lines).
      *
-     * @param  \cm_info $cm        Module de cours.
-     * @param  bool     $plaintext Vrai = texte brut (export PDF).
-     * @return string              Date formatée ou '-'.
+     * @param  \cm_info $cm        Course module.
+     * @param  bool     $plaintext True = plain text (PDF export).
+     * @return string              Formatted date or '-'.
      */
     public static function get_module_availablefrom(\cm_info $cm, bool $plaintext = false): string {
         $ts = self::get_module_availablefrom_timestamp($cm);
@@ -285,17 +285,17 @@ class date_util {
     }
 
     /**
-     * Retourne le timestamp de la date de fermeture effective.
+     * Returns the timestamp of the effective closing date.
      *
-     * Chaîne de fallback :
-     *  1. Date configurée par l'enseignant
-     *  2. Date d'attribution de la note
-     *  3. Date du feedback enseignant (assign uniquement)
-     *  4. Date de soumission par l'étudiant
+     * Fallback chain :
+     *  1. Date set by the teacher
+     *  2. Date the grade was assigned
+     *  3. Date of teacher feedback (assign only)
+     *  4. Date the student submitted
      *
-     * @param  \cm_info $cm     Module de cours.
-     * @param  int      $userid Identifiant étudiant.
-     * @return int              Timestamp Unix ou 0.
+     * @param  \cm_info $cm     Course module.
+     * @param  int      $userid Student ID.
+     * @return int              Timestamp Unix or 0.
      */
     public static function get_module_duedate_timestamp(\cm_info $cm, int $userid = 0): int {
         global $DB;
@@ -362,12 +362,12 @@ class date_util {
     }
 
     /**
-     * Retourne la date de fermeture effective (formatée sur deux lignes).
+     * Returns the effective closing date (formatted on two lines).
      *
-     * @param  \cm_info $cm        Module de cours.
-     * @param  int      $userid    Identifiant étudiant.
-     * @param  bool     $plaintext Vrai = texte brut (export PDF).
-     * @return string              Date formatée ou '-'.
+     * @param  \cm_info $cm        Course module.
+     * @param  int      $userid    Student ID.
+     * @param  bool     $plaintext True = plain text (PDF export).
+     * @return string              Formatted date or '-'.
      */
     public static function get_module_duedate(\cm_info $cm, int $userid = 0, bool $plaintext = false): string {
         $ts = self::get_module_duedate_timestamp($cm, $userid);

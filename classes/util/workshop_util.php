@@ -27,32 +27,19 @@ namespace report_individualized\util;
 /**
  * Utility class for workshop-specific report data.
  *
- * Moodle crée deux grade items pour chaque workshop :
- *  - itemnumber 0 : travail remis (évalué par pairs/prof)
- *  - itemnumber 1 : qualité des évaluations par pair faites par l'étudiant
+ * Moodle creates two grade items for each workshop :
+ *  - itemnumber 0 : work submitted (peer/professor review).
+ *  - itemnumber 1 : quality of peer assessments made by the student.
  */
 class workshop_util
 {
     /**
-     * Retourne les éléments note+feedback+dates+complétion d'un atelier.
+     * Returns the elements note+feedback+dates+completion of a workshop.
      *
-     * Le setting 'workshop_feedback_type' filtre les lignes :
-     *  - 'both'       (défaut) : les deux
-     *  - 'submission'           : itemnumber 0 uniquement
-     *  - 'assessment'           : itemnumber 1 uniquement
-     *
-     * Chaque élément retourné :
-     *  - label          : nom issu du carnet de notes
-     *  - gradestr       : note ou '-'
-     *  - feedbackstr    : feedback ou '-'
-     *  - closedatestr   : trace de fermeture (action étudiant)
-     *  - duedatestr     : date de fermeture configurée par le prof
-     *  - completionicon : icône ✓/✗
-     *
-     * @param  \cm_info $cm        Module workshop.
-     * @param  int      $userid    Identifiant étudiant.
-     * @param  int      $courseid  Identifiant du cours.
-     * @param  bool     $plaintext Vrai = texte brut (export PDF).
+     * @param  \cm_info $cm        Workdshop module.
+     * @param  int      $userid    Student ID.
+     * @param  int      $courseid  Course ID.
+     * @param  bool     $plaintext True = plain text (PDF export).
      * @return array
      */
     public static function get_workshop_items(
@@ -134,7 +121,7 @@ class workshop_util
 
                 $done = ($submission !== false && $submission !== null);
 
-                // Duedate : submissionend → note prof → soumission étudiant.
+                // Duedate : submissionend → teacher grade → submitted student.
                 $duedatestr = '-';
                 if ($workshop && (int)$workshop->submissionend > 0) {
                     $duedatestr = date_util::format_datetime((int)$workshop->submissionend, $plaintext);
@@ -178,7 +165,7 @@ class workshop_util
                     ['uid' => $userid, 'wid' => $cm->instance]
                 );
 
-                // Duedate : assessmentend → note prof → évaluation étudiant.
+                // Duedate : assessmentend → teacher grade → assessment student.
                 $duedatestr = '-';
                 if ($workshop && (int)$workshop->assessmentend > 0) {
                     $duedatestr = date_util::format_datetime((int)$workshop->assessmentend, $plaintext);
@@ -220,14 +207,14 @@ class workshop_util
     }
 
     /**
-     * Feedback reçu sur la soumission de l'étudiant dans un atelier.
+     * Feedback received on the student's submission in a workshop.
      *
-     * Chemin : workshop_submissions (workshopid + authorid)
+     * Path : workshop_submissions (workshopid + authorid)
      *        → workshop_assessments (submissionid) → feedbackauthor
      *
-     * @param  \cm_info $cm        Module workshop.
-     * @param  int      $userid    Auteur de la soumission.
-     * @param  bool     $plaintext Vrai = texte brut.
+     * @param  \cm_info $cm        Workshop module.
+     * @param  int      $userid    Author of the submission.
+     * @param  bool     $plaintext True = plain text.
      * @return string
      */
     public static function get_submission_feedback(
@@ -269,14 +256,14 @@ class workshop_util
     }
 
     /**
-     * Feedback de l'enseignant sur la qualité des évaluations par pair.
+     * Teacher feedback on the quality of peer assessments.
      *
-     * Chemin : workshop_assessments (reviewerid = userid)
+     * Path : workshop_assessments (reviewerid = userid)
      *          JOIN workshop_submissions ON submissionid → feedbackreviewer
      *
-     * @param  \cm_info $cm        Module workshop.
-     * @param  int      $userid    Évaluateur.
-     * @param  bool     $plaintext Vrai = texte brut.
+     * @param  \cm_info $cm        Workshop module.
+     * @param  int      $userid    Évaluator.
+     * @param  bool     $plaintext True = plain text.
      * @return string
      */
     public static function get_assessment_feedback(

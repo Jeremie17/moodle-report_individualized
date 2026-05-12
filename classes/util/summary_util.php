@@ -36,12 +36,12 @@ class summary_util {
     /**
      * Computes all 5 summary metrics for a set of resources and activities.
      *
-     * @param  \cm_info[] $resources        Liste des ressources.
-     * @param  \cm_info[] $activities       Liste des activités.
-     * @param  \cm_info[] $timefeedbackcms  Feedbacks TIME de la portée (section ou cours).
-     * @param  int        $userid           Identifiant étudiant.
-     * @param  int        $datefrom         Timestamp début (0 = pas de limite).
-     * @param  int        $dateto           Timestamp fin   (0 = pas de limite).
+     * @param  \cm_info[] $resources        List of resources.
+     * @param  \cm_info[] $activities       List of activities.
+     * @param  \cm_info[] $timefeedbackcms  Feedback TIME of scope (section or course).
+     * @param  int        $userid           Student ID.
+     * @param  int        $datefrom         Timestamp beginning (0 = no limit).
+     * @param  int        $dateto           Timestamp end   (0 = no limit).
      * @return array {
      *     profestimated    : string,
      *     studentestimated : string,
@@ -78,11 +78,11 @@ class summary_util {
     }
 
     /**
-     * Somme les durées déclarées étudiant sur plusieurs feedbacks TIME.
+     * Sum the durations declared by students across multiple TIME feedback sessions.
      *
-     * @param  \cm_info[] $timefeedbackcms Liste des feedbacks TIME de la portée.
-     * @param  int        $userid          Identifiant étudiant.
-     * @return string                      Durée totale formatée ou '-'.
+     * @param  \cm_info[] $timefeedbackcms List of TIME feedbacks from the scope.
+     * @param  int        $userid          Student ID.
+     * @return string                      Total duration formatted or '-'.
      */
     private static function sum_student_duration(array $timefeedbackcms, int $userid): string {
         if (empty($timefeedbackcms)) {
@@ -96,14 +96,14 @@ class summary_util {
     }
 
     /**
-     * Calcule le taux de complétion des activités.
+     * Calculate the activity completion rate.
      *
-     * Une activité est "complétée" selon la logique de completion_util::is_complete().
-     * Retourne null si aucune activité dans la liste.
+     * An activity is "completed" according to the logic of completion_util::is_complete().
+     * Returns null if there is no activity in the list.
      *
-     * @param  \cm_info[] $activities Liste des activités.
-     * @param  int        $userid     Identifiant étudiant.
-     * @return array|null             {done, total, pct} ou null.
+     * @param  \cm_info[] $activities List of activities.
+     * @param  int        $userid     Student ID.
+     * @return array|null             {done, total, pct} or null.
      */
     private static function compute_completion_rate(array $activities, int $userid): ?array {
         global $DB;
@@ -115,9 +115,9 @@ class summary_util {
         $done  = 0;
         foreach ($activities as $cm) {
             if ($cm->modname === 'workshop') {
-                // Workshop compte pour 2 : soumission + évaluation.
+                // Workshop counts for 2: submission + evaluation.
                 $total += 2;
-                // Soumission.
+                // Submit.
                 if (
                     $DB->record_exists('workshop_submissions', [
                     'workshopid' => $cm->instance,
@@ -149,14 +149,14 @@ class summary_util {
     }
 
     /**
-     * Calcule la note moyenne sur les activités notées.
+     * Calculate the average grade for the graded activities.
      *
-     * Lit tous les grade_items du module (soumission + évaluation pour le workshop).
-     * et grade_grades. Retourne null si aucune note disponible.
+     * Reads all grade_items of the module (submission + evaluation for the workshop).
+     * and grade_grades. Returns null if no grade is available.
      *
-     * @param  \cm_info[] $activities Liste des activités.
-     * @param  int        $userid     Identifiant étudiant.
-     * @return array|null             {avg, max, count} ou null.
+     * @param  \cm_info[] $activities List of activities.
+     * @param  int        $userid     Student ID.
+     * @return array|null             {avg, max, count} or null.
      */
     private static function compute_avg_grade(array $activities, int $userid): ?array {
         global $DB;
@@ -170,9 +170,9 @@ class summary_util {
         $count      = 0;
 
         foreach ($activities as $cm) {
-            // On récupère tous les grade items du module.
-            // Pour les modules standard : un seul item (itemnumber=0).
-            // Pour le workshop : deux items (soumission + évaluation), les deux comptent.
+            // We retrieve all the grade items from the module.
+            // For standard modules: a single item (itemnumber=0).
+            // For the workshop: two items (submission + evaluation), both count.
             $gradeitems = $DB->get_records('grade_items', [
                 'itemtype'     => 'mod',
                 'itemmodule'   => $cm->modname,
@@ -203,8 +203,8 @@ class summary_util {
             return null;
         }
 
-        // On normalise tout sur /20 pour une lisibilité cohérente.
-        // Formule : (somme des notes brutes / somme des notes max) × 20.
+        // We normalize everything to /20 for consistent readability.
+        // Formula: (sum of raw grades / sum of maximum grades) × 20.
         // Ex : 8/10 + 12/15 = 20/25 → 20/25 × 20 = 16/20.
         $avgon20 = round(($totalgrade / $totalmax) * 20, 1);
 
@@ -216,13 +216,13 @@ class summary_util {
     }
 
     /**
-     * Calcule le nombre de ressources consultées au moins une fois.
+     * Calculate the number of resources consulted at least once.
      *
-     * @param  \cm_info[] $resources Liste des ressources.
-     * @param  int        $userid    Identifiant étudiant.
-     * @param  int        $datefrom  Timestamp début (pour view_stats).
-     * @param  int        $dateto    Timestamp fin   (pour view_stats).
-     * @return array|null            {viewed, total} ou null.
+     * @param  \cm_info[] $resources Liste of resources.
+     * @param  int        $userid    Student ID.
+     * @param  int        $datefrom  Timestamp beginning (for view_stats).
+     * @param  int        $dateto    Timestamp end   (for view_stats).
+     * @return array|null            {viewed, total} or null.
      */
     private static function compute_resources_viewed(
         array $resources,
@@ -245,22 +245,22 @@ class summary_util {
     }
 
     /**
-     * Rend les métriques sous forme de bandeau de pilules HTML.
+     * Renders metrics in the form of an HTML pill banner.
      *
-     * Couleurs :
-     *  - Durée prof          : gris (cohérent avec les badges existants)
-     *  - Durée étudiant      : bleu
-     *  - Complétion 100%     : vert   / 50-99% : orange  / <50% : rouge
-     *  - Note moyenne        : violet
-     *  - Ressources vues     : turquoise
+     * Colors :
+     *  - Duration teacher          : grey (cohérent avec les badges existants)
+     *  - Duration student      : blue
+     *  - Completion 100%     : green / 50-99% : orange  / <50% : rouge
+     *  - Average rating        : purple
+     *  - Resources viewss     : turquoise
      *
-     * @param  array $summary Issu de compute().
-     * @return string         HTML du bandeau ou chaîne vide si aucune métrique.
+     * @param  array $summary From compute().
+     * @return string         Html of the banner or empty string if no metrics.
      */
     public static function render_pills(array $summary): string {
         $pills = '';
 
-        // Durée estimée prof.
+        // Estimated duration (teacher).
         if (!empty($summary['profestimated']) && $summary['profestimated'] !== '-') {
             $pills .= html_writer::tag(
                 'span',
@@ -269,7 +269,7 @@ class summary_util {
             );
         }
 
-        // Durée déclarée étudiant.
+        // Declared student duration.
         if (!empty($summary['studentestimated']) && $summary['studentestimated'] !== '-') {
             $pills .= html_writer::tag(
                 'span',
@@ -278,7 +278,7 @@ class summary_util {
             );
         }
 
-        // Taux de complétion.
+        // Completion rate.
         if (!empty($summary['completionrate'])) {
             $cr  = $summary['completionrate'];
             $mod = $cr['pct'] >= 100 ? 'full' : ($cr['pct'] >= 50 ? 'partial' : 'low');
@@ -290,7 +290,7 @@ class summary_util {
             );
         }
 
-        // Note moyenne.
+        // Average rating.
         if (!empty($summary['avggrade'])) {
             $ag = $summary['avggrade'];
             $pills .= html_writer::tag(
@@ -301,7 +301,7 @@ class summary_util {
             );
         }
 
-        // Ressources consultées.
+        // Resources consulted.
         if (!empty($summary['resourcesviewed'])) {
             $rv = $summary['resourcesviewed'];
             $pills .= html_writer::tag(
@@ -320,10 +320,10 @@ class summary_util {
     }
 
     /**
-     * Rend les métriques en texte brut pour l'export PDF.
+     * Renders metrics in plain text for PDF export.
      *
-     * @param  array $summary Issu de compute().
-     * @return string         Métriques séparées par " | ".
+     * @param  array $summary From compute().
+     * @return string         Metrics separated by " | ".
      */
     public static function render_pdf(array $summary): string {
         $parts = [];

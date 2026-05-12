@@ -39,9 +39,7 @@ use report_individualized\util\category_util;
 set_time_limit(0);
 raise_memory_limit(MEMORY_HUGE);
 
-// -------------------------------------------------------------------------
-// 1. PARAMÈTRES ET PERMISSIONS
-// -------------------------------------------------------------------------
+// 1. Parametres and permissions
 
 $userid     = optional_param('userid', 0, PARAM_INT);
 $courseid   = optional_param('courseid', 0, PARAM_INT);
@@ -68,10 +66,7 @@ $context = context_system::instance();
 require_login();
 require_capability('report/individualized:view', $context);
 
-// -------------------------------------------------------------------------
-// 2. LISTE DES UTILISATEURS À EXPORTER
-// -------------------------------------------------------------------------
-
+// 2. List of users to export
 if ($userid > 0) {
     $singleuser = $DB->get_record('user', ['id' => $userid, 'deleted' => 0], '*', MUST_EXIST);
     $users      = [$singleuser];
@@ -93,10 +88,7 @@ if ($userid > 0) {
 
 $resourcetypes = ['resource', 'url', 'page', 'folder', 'book', 'label', 'file'];
 
-// -------------------------------------------------------------------------
-// 3. CRÉATION DU PDF
-// -------------------------------------------------------------------------
-
+// 3. PDF creation
 $pdf = new pdf();
 $pdf->SetAuthor(fullname($USER));
 $pdf->SetTitle(
@@ -113,10 +105,7 @@ $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 $pdf->AddPage('L');
 
-// -------------------------------------------------------------------------
-// 4. CONTENU HTML
-// -------------------------------------------------------------------------
-
+// 4. Html content
 $html  = '<h1 style="color:#333; font-size:18px;">'
     . ($singleuser
         ? get_string('reportfor', 'report_individualized') . ' : ' . fullname($singleuser)
@@ -145,14 +134,14 @@ if (empty($users)) {
     $html .= '<p>' . get_string('noenrolments', 'report_individualized') . '</p>';
 } else {
     foreach ($users as $user) {
-        // Titre par étudiant uniquement en mode "tous les étudiants".
+        // Title per student only in "all students" mode.
         if (!$singleuser) {
             $html .= '<h2 style="color:#222; font-size:15px; margin-top:16px; border-bottom:1px solid #ccc;">'
                 . get_string('reportfor', 'report_individualized') . ' : ' . fullname($user)
                 . '</h2>';
         }
 
-        // Cours de l'étudiant, avec filtre catégorie si actif.
+        // Student course, with category filter if active.
         if ($courseid > 0) {
             $courses = [$courseid => get_course($courseid)];
         } else {
@@ -182,7 +171,7 @@ if (empty($users)) {
                 }
             }
 
-            // Pré-collecte pour le résumé global du cours.
+            // Pre-collection for the overall course summary.
             $globalresources     = [];
             $globalactivities    = [];
             $globaltimefeedbacks = [];
@@ -240,7 +229,7 @@ if (empty($users)) {
                     continue;
                 }
 
-                // Filtre de section : si sectionnum est spécifié, on n'exporte que celle-là.
+                // Section filter: if sectionnum is specified, only that section is exported.
                 if ($sectionnum >= 0 && $section->section !== $sectionnum) {
                     continue;
                 }
@@ -493,10 +482,7 @@ if (empty($users)) {
     } // fin foreach users
 }
 
-// -------------------------------------------------------------------------
-// 5. RENDU ET TÉLÉCHARGEMENT
-// -------------------------------------------------------------------------
-
+// 5. Render and download
 $pdf->writeHTML($html, true, false, true, false, '');
 
 $filename = $singleuser

@@ -29,17 +29,17 @@ namespace report_individualized\util;
  */
 class completion_util {
     /**
-     * Retourne vrai si l'activité est complétée par l'étudiant.
+     * Returns true if the activity is completed by the student.
      *
-     * Logique par module :
-     *  - assign      : soumission existante dans assign_submission (status='submitted')
-     *  - quiz        : tentative terminée dans quiz_attempts (state='finished')
-     *  - workshop    : soumission existante dans workshop_submissions
-     *                  (1 activité = 1 ligne dans le badge, complétée dès qu'une soumission existe)
-     *  - h5pactivity : attempt avec completion=1 dans h5pactivity_attempts
-     *  - autres      : log 'submitted' dans logstore_standard_log
+     * Modular logic:
+     *  - assign      : existing submission in assign_submission (status='submitted')
+     *  - quiz        : attempt completed in quiz_attempts (state='finished')
+     *  - workshop    : existing submission in workshop_submissions
+     *                  (1 activity = 1 line in the badge, completed as soon as a submission exists)
+     *  - h5pactivity : attempt avec completion = 1 in h5pactivity_attempts
+     *  - other       : log 'submitted' in logstore_standard_log
      *
-     * Utilisé par summary_util pour calculer le taux de complétion.
+     * Used by summary_util to calculate the completion rate.
      *
      * @param  \cm_info $cm     Module de cours.
      * @param  int      $userid Identifiant étudiant.
@@ -82,14 +82,16 @@ class completion_util {
     }
 
     /**
-     * Retourne l'icône de complétion HTML ou le texte brut selon le contexte.
+     * Returns the HTML completion icon or plain text depending on the context.
+
+    *
+    * ✓ Green if completed, ✗ Red otherwise.
+
+    * In PDF mode ($plaintext = true) returns "Yes" / "No" without HTML tags.
      *
-     * ✓ vert si fait, ✗ rouge sinon.
-     * En mode PDF ($plaintext = true) retourne "Oui" / "Non" sans balise HTML.
-     *
-     * @param  bool $done      Vrai si l'activité est complétée.
-     * @param  bool $plaintext Vrai = texte brut (export PDF).
-     * @return string          Icône HTML ou texte.
+     * @param  bool $done      True if activity is completed.
+     * @param  bool $plaintext True = plain text (PDF export).
+     * @return string          HTML icon or text.
      */
     public static function render_icon(bool $done, bool $plaintext): string {
         if ($plaintext) {
@@ -101,16 +103,16 @@ class completion_util {
     }
 
     /**
-     * Retourne l'icône de complétion pour une activité standard (non-workshop).
-     *
-     * Logique par module :
-     *  - assign      : soumission existante dans assign_submission (status='submitted')
-     *  - quiz        : tentative terminée dans quiz_attempts (state='finished')
-     *  - workshop    : soumission existante dans workshop_submissions
-     *  - h5pactivity : attempt avec completion=1 dans h5pactivity_attempts.
-     *                  Si non complété et rawscore/maxscore disponibles, affiche le % sous l'icône.
-     *                  Si aucun attempt (ex : vidéo sans interactions), affiche ✗ seul.
-     *  - autres      : log 'submitted' dans logstore_standard_log
+
+    * Returns the completion icon for a standard (non-workshop) activity.
+    * Logic per module:
+    * - assign: existing submission in assign_submission (status='submitted')
+    * - quiz: completed attempt in quiz_attempts (state='finished')
+    * - workshop: existing submission in workshop_submissions
+    * - h5pactivity: attempt with completion=1 in h5pactivity_attempts.
+    * If not completed and rawscore/maxscore available, displays the % under the icon.
+    * If no attempt (e.g., video without interactions), displays only a checkmark.
+    * - other: log 'submitted' in logstore_standard_log.
      *
      * @param  \cm_info $cm        Module de cours.
      * @param  int      $userid    Identifiant étudiant.
@@ -146,7 +148,7 @@ class completion_util {
                 ]);
                 break;
             case 'h5pactivity':
-                // Récupère le dernier attempt de l'étudiant.
+                // Retrieve the student's last attempt.
                 $attempt = $DB->get_record_sql(
                     "SELECT completion, rawscore, maxscore
                        FROM {h5pactivity_attempts}
@@ -155,12 +157,12 @@ class completion_util {
                       LIMIT 1",
                     ['id' => $cm->instance, 'userid' => $userid]
                 );
-                // Complété → ✓ vert.
+                // Completed → ✓ green.
                 if ($attempt && (int)$attempt->completion === 1) {
                     return self::render_icon(true, $plaintext);
                 }
-                // Pas complété : calcule le % si maxscore disponible (exercices avec score).
-                // Pour les vidéos sans interactions, maxscore = 0 → pas de %.
+                // Not completed : calculate the % if maxscore is available (exercises with score).
+                // For videos without interactions, maxscore = 0 → no %.
                 $pct = ($attempt && (float)$attempt->maxscore > 0)
                     ? (int)round((float)$attempt->rawscore / (float)$attempt->maxscore * 100)
                     : null;

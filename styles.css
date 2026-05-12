@@ -5,9 +5,7 @@
    ou .report-individualized-* afin d'éviter tout conflit avec le thème.
    ============================================================================= */
 
-/* Barre de filtres sticky — reste visible lors du scroll.
-   z-index élevé pour passer au-dessus des tableaux.
-   Le background reprend la couleur de fond du thème actif. */
+/* Barre de filtres sticky */
 .report-individualized-filters {
     position: sticky;
     top: 0;
@@ -26,7 +24,6 @@
     margin-bottom: 2rem;
 }
 
-/* Espacement entre un tableau et le titre qui suit */
 .report-individualized-table-wrap {
     margin-bottom: 1.5rem;
 }
@@ -36,7 +33,7 @@
     margin-bottom: 0.75rem;
 }
 
-/* Pilules de durée — lisibles, taille de texte normale */
+/* Pilules de durée */
 .report-individualized-duration-pill {
     display: inline-block;
     padding: 0.3rem 0.75rem;
@@ -69,7 +66,6 @@
     overflow: hidden;
 }
 
-/* Radius uniquement sur les coins supérieurs du header */
 .local-individualized-table thead tr:first-child th:first-child {
     border-top-left-radius: 7px;
 }
@@ -103,7 +99,7 @@
     background-color: rgba(0, 0, 0, 0.04);
 }
 
-/* Cellules — nowrap par défaut pour éviter les colonnes trop étroites */
+/* Cellules de tableaux */
 .local-individualized-table td,
 .local-individualized-table th {
     padding: 0.6rem 0.75rem;
@@ -111,7 +107,7 @@
     white-space: nowrap;
 }
 
-/* Colonne feedback (c4 dans activités) : texte long, largeur généreuse */
+/* Colonne feedback (c4 dans activités) */
 .local-individualized-table td.c4 {
     white-space: normal;
     min-width: 220px;
@@ -125,7 +121,7 @@
     min-width: 140px;
 }
 
-/* Complétion : icône centré horizontalement et verticalement */
+/* Complétion - icône */
 .local-individualized-table td .completion-icon,
 .local-individualized-table td span.text-success,
 .local-individualized-table td span.text-danger {
@@ -136,7 +132,7 @@
 
 /* Bouton export PDF par tableau — visible au survol uniquement */
 .report-individualized-table-wrap {
-    position: relative; /* nécessaire pour positionner le bouton */
+    position: relative;
     margin-bottom: 1.5rem;
 }
 
@@ -153,16 +149,13 @@
 .report-individualized-table-wrap:hover .report-individualized-table-pdf-btn {
     opacity: 1;
 }
-/* =============================================================================
-   BANDEAU RÉSUMÉ — pilules métriques (section + cours global)
-   Affichées sous le titre de section et sous le titre de cours.
-   ============================================================================= */
+/* pilules métriques (section + cours global) */
 
 .report-individualized-summary-bar {
     margin-bottom: 1rem;
 }
 
-/* Pilule de base — même gabarit pour toutes les métriques */
+/* Pilule de base */
 .report-individualized-summary-pill {
     display: inline-block;
     padding: 0.3rem 0.75rem;
@@ -173,49 +166,49 @@
     white-space: nowrap;
 }
 
-/* Durée estimée prof — gris neutre */
+/* Durée estimée prof */
 .report-individualized-summary-duration-prof {
     background-color: var(--bs-secondary-bg, #e9ecef);
     color: var(--bs-secondary-color, #495057);
     border: 1px solid var(--bs-border-color, #dee2e6);
 }
 
-/* Durée déclarée étudiant — bleu clair */
+/* Durée déclarée étudiant */
 .report-individualized-summary-duration-student {
     background-color: var(--bs-primary-bg-subtle, #cfe2ff);
     color: var(--bs-primary-text-emphasis, #084298);
     border: 1px solid var(--bs-primary-border-subtle, #9ec5fe);
 }
 
-/* Complétion 100% — vert */
+/* Complétion 100% */
 .report-individualized-summary-completion-full {
     background-color: #d1e7dd;
     color: #0a3622;
     border: 1px solid #a3cfbb;
 }
 
-/* Complétion 50-99% — orange */
+/* Complétion 50-99% */
 .report-individualized-summary-completion-partial {
     background-color: #fff3cd;
     color: #664d03;
     border: 1px solid #ffda6a;
 }
 
-/* Complétion <50% — rouge clair */
+/* Complétion <50% */
 .report-individualized-summary-completion-low {
     background-color: #f8d7da;
     color: #58151c;
     border: 1px solid #f1aeb5;
 }
 
-/* Note moyenne — violet */
+/* Note moyenne */
 .report-individualized-summary-grade {
     background-color: #e8d5f5;
     color: #4a1776;
     border: 1px solid #c8a8e9;
 }
 
-/* Ressources consultées — turquoise */
+/* Ressources consultées */
 .report-individualized-summary-resources {
     background-color: #d1ecf1;
     color: #0c5460;

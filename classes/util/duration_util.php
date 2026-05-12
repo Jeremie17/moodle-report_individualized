@@ -29,22 +29,22 @@ namespace report_individualized\util;
  */
 class duration_util {
     /**
-     * Durée forfaitaire (en minutes) attribuée aux lignes workshop d'évaluation.
+     * Fixed time (in minutes) allocated to the workshop evaluation lines.
      *
-     * Décision interne : une évaluation par pair est estimée à 10 minutes,
-     * quel que soit ce que le prof a saisi pour la durée globale de l'atelier.
+     * Internal decision: a peer assessment is estimated at 10 minutes,
+     * regardless of the instructor's input for the overall workshop duration.
      */
     public const WORKSHOP_ASSESSMENT_DURATION_MIN = 10;
 
     /**
-     * Formate une durée en minutes en chaîne lisible.
+     * Formats a duration in minutes into a readable string.
      *
      * < 60 min → "X min"
-     * heure pile → "Xh"
-     * heure + minutes → "XhYY" (ex. 90 → "1h30")
+     * on the hour→ "Xh"
+     * hour + minutes → "XhYY" (ex. 90 → "1h30")
      *
-     * @param  int    $minutes Durée en minutes.
-     * @return string          Durée formatée.
+     * @param  int    $minutes Duration in minutes.
+     * @return string          Formatted duration
      */
     public static function format_duration(int $minutes): string {
         if ($minutes <= 0) {
@@ -62,21 +62,21 @@ class duration_util {
     }
 
     /**
-     * Retourne la durée estimée par l'enseignant pour un module.
+     * Returns the instructor's estimated duration for a module.
      *
-     * La valeur est lue depuis mdl_customfield_data (champ 'duree_estimee').
-     * L'instanceid correspond à cm->id.
+     * The value is read from mdl_customfield_data (the 'estimated_duration' field).
+     * The instanceid corresponds to cm->id.
      *
-     * Pour les lignes workshop de type évaluation, une durée forfaitaire de
-     * WORKSHOP_ASSESSMENT_DURATION_MIN minutes s'applique, indépendamment de
-     * ce que le prof a saisi.
+     * For workshop lines of the assessment type, a fixed duration of
+     * WORKSHOP_ASSESSMENT_DURATION_MIN minutes applies, regardless of
+     * what the instructor entered.
      *
-     * @param  \cm_info $cm            Module de cours.
-     * @param  bool     $isassessment  Vrai si la ligne est une évaluation workshop.
-     * @return string                  Durée formatée ou '-'.
+     * @param  \cm_info $cm            Course module.
+     * @param  bool     $isassessment  True if the line is a workshop evaluation.
+     * @return string                  Formatted duration or '-'.
      */
     public static function get_estimated_duration(\cm_info $cm, bool $isassessment = false): string {
-        // Durée forfaitaire pour les évaluations par pair.
+        // Fixed duration for peer assessments.
         if ($isassessment) {
             return self::format_duration(self::WORKSHOP_ASSESSMENT_DURATION_MIN);
         }
@@ -103,17 +103,17 @@ class duration_util {
     }
 
     /**
-     * Calcule la somme des durées estimées par le prof pour une section.
+     * Calculates the sum of the durations estimated by the teacher for a section.
      *
-     * Pour les activités workshop, la durée de la ligne évaluation est comptée
-     * à WORKSHOP_ASSESSMENT_DURATION_MIN minutes (durée forfaitaire interne).
-     * La ligne soumission utilise la valeur du custom field.
+     * For workshop activities, the duration in the assessment line is counted
+     * at WORKSHOP_ASSESSMENT_DURATION_MIN minutes (internal fixed duration).
+     * The submission line uses the value from the custom field.
      *
-     * Retourne '-' si aucune valeur numérique n'est trouvée.
+     * Returns '-' if no numeric value is found.
      *
-     * @param  \cm_info[] $cms          Liste des modules de la section.
-     * @param  int[]      $workshopcmids IDs des modules workshop de la section.
-     * @return string                   Durée totale formatée ou '-'.
+     * @param  \cm_info[] $cms          List of modules in the section.
+     * @param  int[]      $workshopcmids Workshop module IDs for the section.
+     * @return string                   Total duration formatted or '-'.
      */
     public static function get_section_estimated_total(
         array $cms,
@@ -127,12 +127,12 @@ class duration_util {
 
         $total = 0;
 
-        // Additionne la durée forfaitaire des lignes évaluation workshop.
-        // Chaque workshop a 1 ligne soumission + 1 ligne évaluation.
-        // La ligne évaluation vaut toujours WORKSHOP_ASSESSMENT_DURATION_MIN.
+        // Adds the fixed duration of the workshop evaluation lines.
+        // Each workshop has 1 submission line + 1 evaluation line.
+        // The evaluation line is always equal to WORKSHOP_ASSESSMENT_DURATION_MIN.
         $total += count($workshopcmids) * self::WORKSHOP_ASSESSMENT_DURATION_MIN;
 
-        // Pour les autres modules (+ soumission workshop), on lit customfield_data.
+        // For the other modules (+ workshop submission), we read customfield_data.
         $cmids = array_map(fn (\cm_info $cm) => $cm->id, $cms);
 
         if (!empty($cmids)) {
@@ -158,29 +158,29 @@ class duration_util {
     }
 
     /**
-     * Retourne la durée déclarée par l'étudiant via une activité feedback "TIME".
+     * Returns the duration declared by the student via a "TIME" feedback activity.
      *
-     * Convention : le prof crée une activité de type "feedback" avec un idnumber
-     * commençant par "TIME". L'étudiant répond avec une durée en minutes.
-     * On accepte :
-     *  - Une valeur entièrement numérique ("90")
-     *  - Une valeur commençant par un nombre ("90 minutes", "90min")
-     *  - Une valeur libre ("1h30") — retournée telle quelle
+     * Convention: The teacher creates a "feedback" activity with an
+     * idnumber starting with "TIME". The student responds with a duration in 
+     * Accepted values:
+     *  - A completely numeric value ("90")
+     *  - A value starting with a number ("90 minutes", "90min")
+     *  - A free-form value ("1h30") — returned as is
      *
-     * @param  \cm_info $cm     Module feedback.
-     * @param  int      $userid Identifiant étudiant.
-     * @return string           Durée formatée ou '-'.
+     * @param  \cm_info $cm     Feedback module.
+     * @param  int      $userid Student ID.
+     * @return string           Formatted duration or '-'.
      */
 
     /**
-     * Retourne la durée déclarée par l'étudiant en minutes brutes (entier).
+     * Returns the duration declared by the student in raw minutes (integer).
      *
-     * Même logique que get_student_duration() mais retourne un int au lieu d'une
-     * chaîne formatée. Utilisé par summary_util pour sommer sur plusieurs sections.
+     * Same logic as get_student_duration() but returns an int instead of a
+     * Formatted string. Used by summary_util to sum over multiple sections.
      *
-     * @param  \cm_info $cm     Module feedback TIME.
-     * @param  int      $userid Identifiant étudiant.
-     * @return int              Durée en minutes, 0 si non renseignée.
+     * @param  \cm_info $cm     TIME feedback module.
+     * @param  int      $userid Student ID.
+     * @return int              Duration in minutes, 0 if not specified.
      */
     public static function get_student_duration_minutes(\cm_info $cm, int $userid): int {
         global $DB;
@@ -212,11 +212,11 @@ class duration_util {
     }
 
     /**
-     * Retourne la durée déclarée par l'étudiant pour un module, formatée.
+     * Returns the duration declared by the student for a module, formatted.
      *
-     * @param  \cm_info $cm     Module de cours.
-     * @param  int      $userid Identifiant étudiant.
-     * @return string           Durée formatée ou '-'.
+     * @param  \cm_info $cm     Course module.
+     * @param  int      $userid Student ID.
+     * @return string           Formatted duration or '-'.
      */
     public static function get_student_duration(\cm_info $cm, int $userid): string {
         global $DB;
@@ -238,15 +238,15 @@ class duration_util {
             if (empty($v) || $v === '0') {
                 continue;
             }
-            // Valeur entièrement numérique.
+            // A completely digital value.
             if (is_numeric($v) && (int)$v > 0) {
                 return self::format_duration((int)$v);
             }
-            // Valeur commençant par un nombre (ex. "90 minutes").
+            // Value starting with a number (ex: "90 minutes").
             if (preg_match('/^(\d+)/', $v, $matches) && (int)$matches[1] > 0) {
                 return self::format_duration((int)$matches[1]);
             }
-            // Valeur libre non convertible — retournée telle quelle.
+            // Non-convertible free value — returned as is.
             return $v;
         }
 

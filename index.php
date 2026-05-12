@@ -35,10 +35,7 @@ use report_individualized\util\workshop_util;
 use report_individualized\util\summary_util;
 use report_individualized\util\category_util;
 
-// -------------------------------------------------------------------------
-// 1. URL PARAMETERS
-// -------------------------------------------------------------------------
-
+// 1. Url parameters
 $userid     = optional_param('userid', 0, PARAM_INT);
 $courseid   = optional_param('courseid', 0, PARAM_INT);
 $categoryid = optional_param('categoryid', 0, PARAM_INT);
@@ -62,10 +59,7 @@ if (!empty($datetostr) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $datetostr)) {
     $dateto = (int)make_timestamp((int)$y, (int)$m, (int)$d, 23, 59, 59);
 }
 
-// -------------------------------------------------------------------------
-// 2. CONTEXT AND PERMISSIONS
-// -------------------------------------------------------------------------
-
+// 2. Context and permissions
 $context = context_system::instance();
 
 $PAGE->set_context($context);
@@ -83,10 +77,7 @@ $PAGE->set_heading(get_string('pluginname', 'report_individualized'));
 require_login();
 require_capability('report/individualized:view', $context);
 
-// -------------------------------------------------------------------------
-// 3. VISIBLE COLUMNS SETTINGS (admin parameters)
-// -------------------------------------------------------------------------
-
+// 3. Visible columns settings (admin parameters)
 $rescols = [];
 foreach (['resourcename', 'availablefrom', 'viewed', 'viewrange', 'viewcount', 'estimatedduration'] as $col) {
     $val = get_config('report_individualized', 'rescol_' . $col);
@@ -101,10 +92,7 @@ foreach ($activitycols as $col) {
     $actcols[$col] = ($val === false) ? true : (bool)(int)$val;
 }
 
-// -------------------------------------------------------------------------
-// 4. FILTER DATA
-// -------------------------------------------------------------------------
-
+// 4. Filter data
 $studentrole = $DB->get_record('role', ['shortname' => 'student']);
 
 $allusers = [];
@@ -152,10 +140,7 @@ if ($categoryid !== 0) {
 // Category options for the selector (built from courses with enrolled learners).
 $categoryoptions = category_util::get_category_options($userid > 0 ? $userid : 0);
 
-// -------------------------------------------------------------------------
-// 5. HTML RENDERING
-// -------------------------------------------------------------------------
-
+// 5. Html rendering
 echo $OUTPUT->header();
 echo $OUTPUT->heading(get_string('pluginname', 'report_individualized'));
 
@@ -291,9 +276,7 @@ echo html_writer::link(
 echo html_writer::end_div(); // Closes filters-inner.
 echo html_writer::end_div(); // Closes report-individualized-filters.
 
-// -------------------------------------------------------------------------
-// 6. TABLES
-// -------------------------------------------------------------------------
+// 6. Tables
 
 // The report-individualized-content div is the AJAX container.
 // Its content is replaced by the PHP fragment on AJAX calls.

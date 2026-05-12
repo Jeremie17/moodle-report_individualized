@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    // Lien vers le rapport dans le bloc Rapports.
+    // Link to the report in the Reports block.
     $ADMIN->add(
         'reports',
         new admin_externalpage(
@@ -35,8 +35,8 @@ if ($hassiteconfig) {
         )
     );
 
-    // Page de configuration des colonnes — apparaît dans Plugins > Rapports.
-    // admin_settingpage crée une page native dans l'interface d'administration.
+    // Column configuration page — appears in Plugins > Reports.
+    // admin_settingpage creates a native page in the administration interface.
     $settings = new admin_settingpage(
         'report_individualized',
         get_string('columnsettings', 'report_individualized')
@@ -71,7 +71,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // Plage de consultation (première → dernière) — activée par défaut.
+    // View range (first → last) — enabled by default.
     $settings->add(new admin_setting_configcheckbox(
         'report_individualized/rescol_viewrange',
         get_string('viewrange', 'report_individualized'),
@@ -79,7 +79,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // Nombre total de consultations — activé par défaut.
+    // Total number of consultations — enabled by default.
     $settings->add(new admin_setting_configcheckbox(
         'report_individualized/rescol_viewcount',
         get_string('viewcount', 'report_individualized'),
@@ -158,7 +158,7 @@ if ($hassiteconfig) {
         1
     ));
 
-    // Plage de consultation activités — désactivée par défaut.
+    // Activity consultation range — disabled by default.
     $settings->add(new admin_setting_configcheckbox(
         'report_individualized/actcol_viewrange',
         get_string('viewrange', 'report_individualized'),
@@ -166,7 +166,7 @@ if ($hassiteconfig) {
         0
     ));
 
-    // Nombre de consultations activités — désactivé par défaut.
+    // Number of consultations/activities — disabled by default.
     $settings->add(new admin_setting_configcheckbox(
         'report_individualized/actcol_viewcount',
         get_string('viewcount', 'report_individualized'),

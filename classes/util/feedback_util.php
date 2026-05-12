@@ -32,18 +32,18 @@ namespace report_individualized\util;
 class feedback_util
 {
     /**
-     * Dispatcher : retourne le feedback enseignant pour une activité non-workshop.
+     * Dispatcher : returns teacher feedback for a non-workshop activity.
      *
-     * Modules couverts :
+     * Modules covered:
      *  - assign      → mdl_assignfeedback_comments
-     *  - quiz        → mdl_quiz_feedback (paliers automatiques)
-     *  - h5pactivity → pas de feedback enseignant
+     *  - quiz        → mdl_quiz_feedback (automatic bearings)
+     *  - h5pactivity → no teacher feedback
      *  - autres      → fallback gradebook
      *
-     * @param  \cm_info $cm        Module de cours.
-     * @param  int      $userid    Identifiant étudiant.
-     * @param  bool     $plaintext Vrai = texte brut sans HTML (export PDF).
-     * @return string              Feedback formaté ou '-'.
+     * @param  \cm_info $cm        Course module.
+     * @param  int      $userid    Student ID.
+     * @param  bool     $plaintext True = plain text without HTML (PDF export).
+     * @return string              Formatted feedback or '-'.
      */
     public static function get_activity_feedback(
         \cm_info $cm,
@@ -68,15 +68,15 @@ class feedback_util
     }
 
     /**
-     * Feedback d'un devoir (assign) depuis mdl_assignfeedback_comments.
+     * Feedback on an assignment (assign) from mdl_assignfeedback_comments.
      *
-     * Chemin :
+     * Path :
      *  assign_grades (assignment + userid) → id
      *  → assignfeedback_comments (assignment + grade = id) → commenttext
      *
-     * @param  \cm_info $cm     Module assign.
-     * @param  int      $userid Identifiant étudiant.
-     * @return string           Commentaire de correction ou '-'.
+     * @param  \cm_info $cm     Assign module.
+     * @param  int      $userid Student ID.
+     * @return string           Correction comment or '-'.
      */
     public static function get_assign_feedback(\cm_info $cm, int $userid): string {
         global $DB;
@@ -107,13 +107,13 @@ class feedback_util
     }
 
     /**
-     * Feedback automatique d'un quiz selon les paliers configurés par l'enseignant.
+     * Automatic feedback from a quiz based on levels configured by the teacher.
      *
-     * Comparaison : mingrade <= note < maxgrade (identique à quiz_feedback_for_grade() core).
+     * Comparison : mingrade <= grade < maxgrade (same as quiz_feedback_for_grade() core).
      *
-     * @param  \cm_info $cm     Module quiz.
-     * @param  int      $userid Identifiant étudiant.
-     * @return string           Texte du feedback ou '-'.
+     * @param  \cm_info $cm     Quiz module.
+     * @param  int      $userid Student ID.
+     * @return string           Feedback text or '-'.
      */
     public static function get_quiz_feedback(\cm_info $cm, int $userid): string {
         global $DB;
@@ -127,8 +127,8 @@ class feedback_util
             return '-';
         }
 
-        // Le paramètre nommé :grade ne peut apparaître qu'une seule fois.
-        // On utilise :grade2 pour la deuxième occurrence.
+        // The parameter named :grade can only appear once.
+        // We use :grade2 for the second occurrence.
         $feedbackrow = $DB->get_record_select(
             'quiz_feedback',
             'quizid = :quizid AND mingrade <= :grade AND :grade2 < maxgrade',
@@ -147,11 +147,11 @@ class feedback_util
     }
 
     /**
-     * Fallback : feedback saisi manuellement dans le carnet de notes Moodle.
+     * Fallback : feedback entered manually in the Moodle notebook.
      *
-     * @param  \cm_info $cm     Module de cours.
-     * @param  int      $userid Identifiant étudiant.
-     * @return string           Feedback formaté ou '-'.
+     * @param  \cm_info $cm     Course module.
+     * @param  int      $userid Student ID.
+     * @return string           Feedback text or '-'.
      */
     public static function get_gradebook_feedback(\cm_info $cm, int $userid): string {
         global $DB;

@@ -4,7 +4,7 @@ Individualized student report plugin for Moodle 5.
 
 Generates a detailed per-student report of their activity within a course — exportable as PDF — intended for submission to OPCO training funding organizations.
 
-Developed by Ifrass (2025–2026).
+Developed by Ifrass (2026–2027).
 
 ---
 

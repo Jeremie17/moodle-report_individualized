@@ -84,7 +84,7 @@ class get_filter_options extends external_api {
         $studentrole = $DB->get_record('role', ['shortname' => 'student']);
         if ($studentrole) {
             if ($courseid > 0) {
-                // Filtre conditionnel : uniquement les étudiants de ce cours.
+                // Conditional filter: only students from this course.
                 $coursecontext = \context_course::instance($courseid);
                 $roleusers = get_role_users(
                     $studentrole->id,
@@ -117,9 +117,9 @@ class get_filter_options extends external_api {
         $courses = [['id' => 0, 'name' => get_string('allcourses', 'report_individualized')]];
 
         if ($userid > 0) {
-            // Filtre conditionnel : uniquement les cours de cet étudiant.
+            // Conditional filter: only this student's courses.
             $usercourses = enrol_get_users_courses($userid, true, 'id, fullname, category', 'fullname ASC');
-            // Applique le filtre catégorie si actif.
+            // Applies the category filter if active.
             if ($categoryid !== 0) {
                 $usercourses = array_column(
                     category_util::filter_courses_by_category($categoryid, array_values($usercourses)),
@@ -132,7 +132,7 @@ class get_filter_options extends external_api {
             }
         } else {
             $allcourses = $DB->get_records_select('course', 'id <> 1', [], 'fullname ASC', 'id, fullname, category');
-            // Applique le filtre catégorie si actif.
+            // Applies the category filter if active.
             if ($categoryid !== 0) {
                 $allcourses = array_column(
                     category_util::filter_courses_by_category($categoryid, array_values($allcourses)),
@@ -165,7 +165,7 @@ class get_filter_options extends external_api {
      * @return external_single_structure
      */
     public static function execute_returns(): external_single_structure {
-        // Structure partagée pour les listes d'options.
+        // Shared structure for option lists.
         $optionlist = new external_multiple_structure(
             new external_single_structure([
                 'id'   => new external_value(PARAM_INT, 'Option value (ID)'),
