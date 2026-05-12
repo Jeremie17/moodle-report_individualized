@@ -82,17 +82,15 @@ class completion_util {
     }
 
     /**
-     * Returns the HTML completion icon or plain text depending on the context.
-
+    * Returns the HTML completion icon or plain text depending on the context.
     *
     * ✓ Green if completed, ✗ Red otherwise.
-
     * In PDF mode ($plaintext = true) returns "Yes" / "No" without HTML tags.
-     *
-     * @param  bool $done      True if activity is completed.
-     * @param  bool $plaintext True = plain text (PDF export).
-     * @return string          HTML icon or text.
-     */
+    *
+    * @param  bool $done      True if activity is completed.
+    * @param  bool $plaintext True = plain text (PDF export).
+    * @return string          HTML icon or text.
+    */
     public static function render_icon(bool $done, bool $plaintext): string {
         if ($plaintext) {
             return $done ? get_string('yes') : get_string('no');
@@ -103,22 +101,22 @@ class completion_util {
     }
 
     /**
-
     * Returns the completion icon for a standard (non-workshop) activity.
+    *
     * Logic per module:
     * - assign: existing submission in assign_submission (status='submitted')
     * - quiz: completed attempt in quiz_attempts (state='finished')
     * - workshop: existing submission in workshop_submissions
     * - h5pactivity: attempt with completion=1 in h5pactivity_attempts.
-    * If not completed and rawscore/maxscore available, displays the % under the icon.
-    * If no attempt (e.g., video without interactions), displays only a checkmark.
+    *                If not completed and rawscore/maxscore available, displays the % under the icon.
+    *                If no attempt (e.g., video without interactions), displays only a checkmark.
     * - other: log 'submitted' in logstore_standard_log.
-     *
-     * @param  \cm_info $cm        Module de cours.
-     * @param  int      $userid    Identifiant étudiant.
-     * @param  bool     $plaintext Vrai = texte brut (export PDF).
-     * @return string              Icône HTML ou texte.
-     */
+    *
+    * @param  \cm_info $cm        Module de cours.
+    * @param  int      $userid    Identifiant étudiant.
+    * @param  bool     $plaintext Vrai = texte brut (export PDF).
+    * @return string              Icône HTML ou texte.
+    */
     public static function get_completion_icon(
         \cm_info $cm,
         int $userid,

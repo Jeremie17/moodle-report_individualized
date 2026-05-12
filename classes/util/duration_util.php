@@ -158,21 +158,6 @@ class duration_util {
     }
 
     /**
-     * Returns the duration declared by the student via a "TIME" feedback activity.
-     *
-     * Convention: The teacher creates a "feedback" activity with an
-     * idnumber starting with "TIME". The student responds with a duration in 
-     * Accepted values:
-     *  - A completely numeric value ("90")
-     *  - A value starting with a number ("90 minutes", "90min")
-     *  - A free-form value ("1h30") — returned as is
-     *
-     * @param  \cm_info $cm     Feedback module.
-     * @param  int      $userid Student ID.
-     * @return string           Formatted duration or '-'.
-     */
-
-    /**
      * Returns the duration declared by the student in raw minutes (integer).
      *
      * Same logic as get_student_duration() but returns an int instead of a
