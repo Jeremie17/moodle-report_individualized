@@ -65,6 +65,7 @@ $string['resourcename_type'] = 'Type';
 $string['resources'] = 'Ressources';
 $string['selectcategory'] = 'Sélectionner une catégorie';
 $string['selectcourse'] = 'Sélectionner un cours';
+$string['selectlearner'] = 'Sélectionnez un apprenant pour afficher son rapport.';
 $string['selectuser'] = 'Sélectionner un apprenant';
 $string['studentestimated'] = 'Estimation apprenant';
 $string['summary_avggrade'] = 'Note moyenne';

@@ -65,6 +65,7 @@ $string['resourcename_type'] = 'Type';
 $string['resources'] = 'Resources';
 $string['selectcategory'] = 'Select a category';
 $string['selectcourse'] = 'Select a course';
+$string['selectlearner'] = 'Select a learner to display their report.';
 $string['selectuser'] = 'Select a learner';
 $string['studentestimated'] = 'Learner estimate';
 $string['summary_avggrade'] = 'Average grade';

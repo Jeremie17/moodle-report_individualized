@@ -60,9 +60,16 @@ if (!empty($datetostr) && preg_match('/^\d{4}-\d{2}-\d{2}$/', $datetostr)) {
 }
 
 // 2. Context and permissions
-$context = context_system::instance();
-
+if ($courseid > 0) {
+    $course  = get_course($courseid);
+    $context = context_course::instance($courseid);
+} else {
+    $course  = get_site();
+    $context = context_course::instance(SITEID);
+}
+$PAGE->set_course($course);
 $PAGE->set_context($context);
+
 $PAGE->set_url(new moodle_url('/report/individualized/index.php', [
     'userid'     => $userid,
     'courseid'   => $courseid,
@@ -303,7 +310,12 @@ $headerduration  = get_string('estimatedduration_line1', 'report_individualized'
 $headerviewcount = get_string('viewcount_line1', 'report_individualized') . '<br>'
     . get_string('viewcount_line2', 'report_individualized');
 
-if (!empty($userstoshow)) {
+if ($userid === 0 && $courseid === 0 && $categoryid === 0 && empty($datefromstr) && empty($datetostr)) {
+    echo html_writer::div(
+        get_string('selectlearner', 'report_individualized'),
+        'alert alert-info mt-3'
+    );
+} else if (!empty($userstoshow)) {
     foreach ($userstoshow as $user) {
         echo $OUTPUT->heading(
             get_string('reportfor', 'report_individualized') . ' : ' . fullname($user),

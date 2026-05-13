@@ -10,13 +10,18 @@
     position: sticky;
     top: 0;
     z-index: 1031;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100%;
+    margin-left: 0;
     background-color: var(--bs-body-bg, #fff);
-    padding: 0.75rem calc(50vw - 50%);
+    padding: 0.75rem 1rem;
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
     margin-bottom: 1.5rem;
     box-sizing: border-box;
+}
+
+.report-individualized-filters select,
+.report-individualized-filters input[type="date"] {
+    max-width: 220px;
 }
 
 /* Espacement entre les blocs de cours */

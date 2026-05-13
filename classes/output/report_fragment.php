@@ -123,6 +123,13 @@ class report_fragment
             }
         }
 
+        if ($userid === 0 && $courseid === 0 && $categoryid === 0 && empty($datefromstr) && empty($datetostr)) {
+    return html_writer::div(
+        get_string('selectlearner', 'report_individualized'),
+        'alert alert-info mt-3'
+    );
+}
+
         if (empty($userstoshow)) {
             return '';
         }
