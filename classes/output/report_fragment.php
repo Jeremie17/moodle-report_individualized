@@ -157,11 +157,9 @@ class report_fragment
 
         $resourcetypes = ['resource', 'url', 'page', 'folder', 'book', 'label', 'file'];
 
-        // =====================================================================
-        // PHASE 1 — DISCOVERY (cheap: modinfo cache + date-filter reads only)
+        // Phase 1: Discovery — reads modinfo cache and date filters only.
         // Collects all render units without running any heavy DB queries.
-        // A "unit" = one section of one course for one user, with its CM lists.
-        // =====================================================================
+        // A unit is one section of one course for one user, with its CM lists.
         $allunits = [];
 
         foreach ($userstoshow as $user) {
@@ -279,14 +277,9 @@ class report_fragment
             );
         }
 
-        // =====================================================================
-        // PHASE 2 — PAGINATION
-        // Sections are never split mid-way; a page always contains full sections.
-        // The client passes the number of CMs already loaded as "offset" so the
-        // next page starts exactly where the previous one ended, regardless of
-        // how many CMs the previous page actually contained (avoids duplicate
-        // rows when a section overshoots the perpage boundary).
-        // =====================================================================
+        // Phase 2: Pagination — slices units by CM offset without mid-section cuts.
+        // The client passes the number of CMs already loaded as offset so the
+        // next page starts exactly where the previous one ended.
         $totalcms = 0;
         foreach ($allunits as $unit) {
             $totalcms += count($unit['resources']) + count($unit['activities']);
@@ -317,7 +310,7 @@ class report_fragment
             $unitoffset  += $unitcms;
         }
 
-        // $unitoffset now equals the CM count through the last rendered unit.
+        // After the loop, unitoffset equals the CM count through the last rendered unit.
         $hasmore    = $unitoffset < $totalcms;
         $nextoffset = $unitoffset;
 
@@ -360,9 +353,7 @@ class report_fragment
             }
         }
 
-        // =====================================================================
-        // PHASE 3 — RENDER (expensive: heavy DB queries for current page only)
-        // =====================================================================
+        // Phase 3: Render — runs expensive DB queries for current page units only.
         ob_start();
 
         $currentuserid   = 0;
@@ -423,7 +414,7 @@ class report_fragment
             echo html_writer::end_div();
             echo summary_util::render_pills($sectionsummary);
 
-            // --- Resources table ---
+            // Resources table.
             if (!empty($unit['resources'])) {
                 echo html_writer::start_div('report-individualized-table-wrap');
                 $tablepdfurl = new \moodle_url('/report/individualized/export_pdf.php', [
@@ -505,7 +496,7 @@ class report_fragment
                 echo html_writer::end_div();
             }
 
-            // --- Activities table ---
+            // Activities table.
             if (!empty($unit['activities'])) {
                 echo html_writer::start_div('report-individualized-table-wrap');
                 $tablepdfurl = new \moodle_url('/report/individualized/export_pdf.php', [
