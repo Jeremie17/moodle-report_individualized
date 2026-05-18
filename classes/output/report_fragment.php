@@ -79,13 +79,13 @@ class report_fragment
         require_capability('report/individualized:view', $context);
 
         // Parameters.
-        $userid      = isset($args['userid'])     ? clean_param($args['userid'],     PARAM_INT)          : 0;
-        $courseid    = isset($args['courseid'])    ? clean_param($args['courseid'],   PARAM_INT)          : 0;
-        $categoryid  = isset($args['categoryid'])  ? clean_param($args['categoryid'], PARAM_INT)          : 0;
-        $datefromstr = isset($args['datefrom'])    ? clean_param($args['datefrom'],   PARAM_ALPHANUMEXT)  : '';
-        $datetostr   = isset($args['dateto'])      ? clean_param($args['dateto'],     PARAM_ALPHANUMEXT)  : '';
-        $offset      = isset($args['offset'])      ? clean_param($args['offset'],     PARAM_INT)          : 0;
-        $perpage     = 5;
+        $userid = isset($args['userid']) ? clean_param($args['userid'], PARAM_INT) : 0;
+        $courseid = isset($args['courseid']) ? clean_param($args['courseid'], PARAM_INT) : 0;
+        $categoryid = isset($args['categoryid']) ? clean_param($args['categoryid'], PARAM_INT) : 0;
+        $datefromstr = isset($args['datefrom']) ? clean_param($args['datefrom'], PARAM_ALPHANUMEXT) : '';
+        $datetostr = isset($args['dateto']) ? clean_param($args['dateto'], PARAM_ALPHANUMEXT) : '';
+        $offset = isset($args['offset']) ? clean_param($args['offset'], PARAM_INT) : 0;
+        $perpage     = 50;
 
         $datefrom = 0;
         $dateto   = 0;
@@ -205,7 +205,7 @@ class report_fragment
                             && strpos(strtoupper(trim($cm->idnumber)), 'TIME') === 0
                         ) {
                             $timefeedbackcm = $cm;
-                        } elseif (in_array($cm->modname, $resourcetypes)) {
+                        } else if (in_array($cm->modname, $resourcetypes)) {
                             $resources[] = $cm;
                         } else {
                             $activities[] = $cm;
@@ -267,12 +267,13 @@ class report_fragment
         }
 
         if (empty($allunits)) {
-            return html_writer::tag('div',
+            return html_writer::tag(
+                'div',
                 $OUTPUT->notification(get_string('noenrolments', 'report_individualized'), 'info'),
                 [
-                    'class'          => 'report-individualized-paginated',
-                    'data-totalcms'  => '0',
-                    'data-hasmore'   => '0',
+                    'class' => 'report-individualized-paginated',
+                    'data-totalcms' => '0',
+                    'data-hasmore' => '0',
                     'data-nextoffset' => '0',
                 ]
             );
