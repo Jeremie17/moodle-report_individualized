@@ -1,15 +1,8 @@
-/* =============================================================================
-   report_individualized — styles.css
-   Moodle charge automatiquement ce fichier pour le plugin.
-   Scope strict : toutes les règles sont préfixées par .local-individualized-table
-   ou .report-individualized-* afin d'éviter tout conflit avec le thème.
-   ============================================================================= */
-
 /* Barre de filtres sticky */
 .report-individualized-filters {
     position: sticky;
     top: 0;
-    z-index: 1031;
+    z-index: 999;
     width: 100%;
     margin-left: 0;
     background-color: var(--bs-body-bg, #fff);
@@ -218,4 +211,11 @@
     background-color: #d1ecf1;
     color: #0c5460;
     border: 1px solid #83d3e0;
+}
+
+.report-individualized-loadmore {
+    font-size: 2rem !important;
+    line-height: 1 !important;
+    width: 3rem !important;
+    height: 3rem !important;
 }
