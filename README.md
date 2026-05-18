@@ -71,7 +71,8 @@ To allow students to declare how long they spent on a section, the teacher creat
 - Specialized feedback per activity type: assign, quiz, workshop, H5P, fallback gradebook
 - Dynamic columns: the administrator can show/hide columns from **Site administration → Reports → Individualized report settings**
 - PDF export: full report, per-course, per-section, per-table (resources or activities)
-- AJAX filters: no page reload when changing student, course, or date range
+- AJAX filters: no page reload when changing student, course, or date range 
+- Server-side pagination: loads complete sections at a time, with a "+" button to load more
 - Full English and French language support
 
 ---
@@ -187,7 +188,6 @@ report/individualized/
 
 ## Known limitations
 
-- Pagination is not implemented. With `flexible_table` and PHP-side data accumulation, native Moodle pagination requires SQL-driven queries. This is planned for a future version.
 - Resource engagement cannot be verified beyond the `viewed` log event. Moodle does not track time spent on files or external URLs.
 - Simple H5P videos (no integrated quizzes) do not generate xAPI statements — completion and closing trace are unavailable for this content type.
 - AMD compilation via Moodle's Gruntfile is currently blocked by a compatibility issue between Moodle 5.1.x and Node.js 22. Build files are pre-compiled using terser as a workaround until Moodle resolves this upstream.

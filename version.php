@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Version du plugin au format AAAAMMJJXX (XX = incrément du jour).
-$plugin->version   = 2026051809;
+$plugin->version   = 2026051813;
 
 // Version minimale de Moodle requise (2025100600 = Moodle 5.1).
 $plugin->requires  = 2025100600;
@@ -34,7 +34,7 @@ $plugin->requires  = 2025100600;
 $plugin->component = 'report_individualized';
 
 // Numéro de version humainement lisible.
-$plugin->release   = '0.4.0';
+$plugin->release   = '0.5.0';
 
 // Niveau de maturité : MATURITY_ALPHA, MATURITY_BETA, MATURITY_RC, MATURITY_STABLE.
 $plugin->maturity  = MATURITY_BETA;

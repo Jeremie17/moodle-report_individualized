@@ -5,6 +5,20 @@ This project adheres to [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 ---
 
+## [0.5.0] - 2026-05-18
+
+### Added
+- Server-side pagination: report rendered in phases (Discovery / Pagination / Render),
+  loading complete sections at a time (50 CMs per page)
+- "+" load-more button to append subsequent pages without page reload
+- Placeholder "Select a learner" shown by default instead of loading all students
+
+### Changed
+- `index.php` reduced to a pure shell; all rendering logic moved exclusively to
+  `report_fragment.php`
+- AJAX debounce (300 ms) and request ID guard to prevent race conditions on rapid
+  filter changes
+  
 ## [0.4.0] - 2026-05-12
 
 ### Added

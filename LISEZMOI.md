@@ -72,6 +72,7 @@ Pour permettre aux étudiants de déclarer le temps passé sur une section, le f
 - Colonnes dynamiques : l'administrateur peut afficher/masquer les colonnes depuis **Administration du site → Rapports → Paramètres du rapport individualisé**
 - Export PDF : rapport complet, par cours, par section, par tableau (ressources ou activités)
 - Filtres AJAX : pas de rechargement de page lors du changement d'étudiant, de cours ou de plage de dates
+- Pagination serveur : chargement par sections complètes (50 CMs par page) avec bouton "+"
 - Support complet des langues anglaise et française
 
 ---
@@ -187,7 +188,6 @@ report/individualized/
 
 ## Limitations connues
 
-- La pagination n'est pas implémentée. Avec `flexible_table` et l'accumulation de données côté PHP, la pagination native Moodle nécessite des requêtes pilotées par SQL. Ceci est prévu pour une version future.
 - L'engagement sur les ressources ne peut pas être vérifié au-delà de l'événement de log `viewed`. Moodle ne trace pas le temps passé sur les fichiers ou les URL externes.
 - Les vidéos H5P simples (sans quiz intégrés) ne génèrent pas de statements xAPI — la complétion et la trace de fermeture sont indisponibles pour ce type de contenu.
 - La compilation AMD via le Gruntfile de Moodle est actuellement bloquée par une incompatibilité entre Moodle 5.1.x et Node.js 22. Les fichiers de build sont pré-compilés avec terser en attendant que Moodle corrige ce problème en amont.
