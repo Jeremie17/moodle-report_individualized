@@ -23,7 +23,7 @@
  * single place and enables server-side pagination on every load path.
  *
  * @package   report_individualized
- * @copyright 2025 Ifrass
+ * @copyright 2026 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -141,75 +141,77 @@ echo html_writer::start_div('report-individualized-filters-inner d-flex justify-
 echo html_writer::start_tag('form', [
     'method' => 'get',
     'action' => new moodle_url('/report/individualized/index.php'),
-    'class'  => 'd-flex align-items-center gap-3 flex-grow-1 flex-wrap',
+    'class'  => 'd-flex flex-column gap-2 flex-grow-1',
+    'id'     => 'report-individualized-form',
 ]);
 
-// Category filter.
+// Line 1: category and learner filters.
+echo html_writer::start_div('d-flex align-items-center gap-3 flex-wrap');
+
 echo html_writer::tag(
     'label',
     get_string('selectcategory', 'report_individualized'),
-    ['for' => 'categoryid', 'class' => 'mb-0 me-2']
+    ['for' => 'categoryid', 'class' => 'mb-0']
 );
-
 $catopts = [0 => get_string('allcategories', 'report_individualized')];
 foreach ($categoryoptions as $opt) {
     $catopts[$opt['id']] = $opt['path'];
 }
 echo html_writer::select($catopts, 'categoryid', $categoryid, false, [
     'id'    => 'categoryid',
-    'class' => 'form-select me-3',
+    'class' => 'form-select',
 ]);
 
-// Learner filter.
 echo html_writer::tag(
     'label',
     get_string('selectuser', 'report_individualized'),
-    ['for' => 'userid', 'class' => 'mb-0 me-2']
+    ['for' => 'userid', 'class' => 'mb-0']
 );
-
 $useroptions = [0 => get_string('allusers', 'report_individualized')];
 foreach ($allusers as $u) {
     $useroptions[$u->id] = fullname($u);
 }
 echo html_writer::select($useroptions, 'userid', $userid, false, [
     'id'    => 'userid',
-    'class' => 'form-select me-3',
+    'class' => 'form-select',
 ]);
 
-// Course filter.
+echo html_writer::end_div();
+
+// Line 2: course and date filters.
+echo html_writer::start_div('d-flex align-items-center gap-3 flex-wrap');
+
 echo html_writer::tag(
     'label',
     get_string('selectcourse', 'report_individualized'),
-    ['for' => 'courseid', 'class' => 'mb-0 me-2']
+    ['for' => 'courseid', 'class' => 'mb-0']
 );
-
 $courseoptions = [0 => get_string('allcourses', 'report_individualized')];
 foreach ($allcourses as $c) {
     $courseoptions[$c->id] = format_string($c->fullname);
 }
 echo html_writer::select($courseoptions, 'courseid', $courseid, false, [
     'id'    => 'courseid',
-    'class' => 'form-select me-3',
+    'class' => 'form-select',
 ]);
 
-// Date filters.
 echo html_writer::tag(
     'label',
     get_string('datefrom', 'report_individualized'),
-    ['for' => 'datefrom', 'class' => 'mb-0 me-2']
+    ['for' => 'datefrom', 'class' => 'mb-0']
 );
 echo html_writer::empty_tag('input', [
     'type'  => 'date',
     'id'    => 'datefrom',
     'name'  => 'datefrom',
     'value' => $datefromstr,
-    'class' => 'form-control me-3 report-individualized-date-input',
+    'class' => 'form-control report-individualized-date-input',
 ]);
 
 echo html_writer::tag(
     'label',
     get_string('dateto', 'report_individualized'),
-    ['for' => 'dateto', 'class' => 'mb-0 me-2']
+    ['for' => 'dateto', 'class' => 'mb-0']
 );
 echo html_writer::empty_tag('input', [
     'type'  => 'date',
@@ -217,13 +219,18 @@ echo html_writer::empty_tag('input', [
     'name'  => 'dateto',
     'value' => $datetostr,
     'max'   => date('Y-m-d'),
-    'class' => 'form-control me-3 report-individualized-date-input',
+    'class' => 'form-control report-individualized-date-input',
 ]);
+
+echo html_writer::end_div();
+
+// Line 3: action buttons centered below filters.
+echo html_writer::start_div('d-flex justify-content-center align-items-center gap-3 mt-2');
 
 echo html_writer::tag(
     'button',
     get_string('applyfilter', 'report_individualized'),
-    ['type' => 'submit', 'class' => 'btn btn-primary me-2']
+    ['type' => 'submit', 'form' => 'report-individualized-form', 'class' => 'btn btn-primary']
 );
 
 echo html_writer::link(
@@ -232,19 +239,16 @@ echo html_writer::link(
     ['class' => 'btn btn-secondary']
 );
 
-echo html_writer::end_tag('form');
-
-// PDF button — always in the DOM, shown or hidden by JS depending on the learner filter.
-// The initial inline style reflects the URL parameter state on page load.
 echo html_writer::link(
     $pdfurl,
     get_string('exportpdf', 'report_individualized'),
     [
-        'class' => 'btn btn-outline-dark ms-3 flex-shrink-0',
+        'class' => 'btn btn-outline-dark',
         'style' => $userid > 0 ? '' : 'display:none',
     ]
 );
 
+echo html_writer::end_div();
 echo html_writer::end_div();
 echo html_writer::end_div();
 

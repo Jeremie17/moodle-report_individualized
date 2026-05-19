@@ -18,7 +18,7 @@
  * Strings for component 'report_individualized', language 'fr'.
  *
  * @package   report_individualized
- * @copyright 2025 Ifrass
+ * @copyright 2026 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

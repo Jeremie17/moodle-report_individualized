@@ -26,7 +26,7 @@
  *  3. Render     — expensive DB queries run only for the current page's units.
  *
  * @package   report_individualized
- * @copyright 2025 Ifrass
+ * @copyright 2026 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -85,7 +85,7 @@ class report_fragment
         $datefromstr = isset($args['datefrom']) ? clean_param($args['datefrom'], PARAM_ALPHANUMEXT) : '';
         $datetostr = isset($args['dateto']) ? clean_param($args['dateto'], PARAM_ALPHANUMEXT) : '';
         $offset = isset($args['offset']) ? clean_param($args['offset'], PARAM_INT) : 0;
-        $perpage     = 50;
+        $perpage     = 30;
 
         $datefrom = 0;
         $dateto   = 0;

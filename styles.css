@@ -3,12 +3,13 @@
    Le background reprend la couleur de fond du thème actif. */
 .report-individualized-filters {
     position: sticky;
-    top: 0;
+    top: 56px;
     z-index: 999;
-    width: 85vw;
-    margin-left: calc(-50vw + 50%);
+    width: auto;
+    margin-left: calc(-1 * var(--bs-gutter-x, 1.5rem));
+    margin-right: calc(-1 * var(--bs-gutter-x, 1.5rem));
+    padding: 0.75rem var(--bs-gutter-x, 1.5rem);
     background-color: var(--bs-body-bg, #fff);
-    padding: 0.75rem calc(50vw - 50%);
     border-bottom: 1px solid var(--bs-border-color, #dee2e6);
     margin-bottom: 1.5rem;
     box-sizing: border-box;
@@ -51,7 +52,7 @@
 }
 
 .report-individualized-user-search {
-    min-width: 260px;
+    min-width: 300px;
 }
 
 /* Tableau principal */

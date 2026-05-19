@@ -31,7 +31,7 @@
  * searchable input + dropdown list built in vanilla JS.
  *
  * @module    report_individualized/filters
- * @copyright 2025 Ifrass
+ * @copyright 2026 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -91,7 +91,7 @@ define([
      */
     const updatePdfUrl = (params) => {
         const pdfBtn = document.querySelector(
-            '.report-individualized-filters-inner a.btn-outline-dark'
+            '.report-individualized-filters a.btn-outline-dark'
         );
         if (!pdfBtn) {
             return;

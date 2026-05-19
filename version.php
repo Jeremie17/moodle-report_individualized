@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Version du plugin au format AAAAMMJJXX (XX = incrément du jour).
-$plugin->version   = 2026051910;
+$plugin->version   = 2026051918;
 
 // Version minimale de Moodle requise (2025100600 = Moodle 5.1).
 $plugin->requires  = 2025100600;
