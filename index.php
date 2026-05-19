@@ -121,7 +121,10 @@ echo $OUTPUT->heading(get_string('pluginname', 'report_individualized'));
 // Initialise the AMD filters.js module with the system context ID.
 // The module intercepts filter changes and refreshes the report via core/fragment.
 // It also triggers an initial load on page start when a filter is already set.
-$PAGE->requires->js_call_amd('report_individualized/filters', 'init', [$context->id]);
+$PAGE->requires->js_call_amd('report_individualized/filters', 'init', [
+    $context->id,
+    get_string('selectlearner', 'report_individualized'),
+]);
 
 $pdfurl = new moodle_url('/report/individualized/export_pdf.php', [
     'userid'     => $userid,

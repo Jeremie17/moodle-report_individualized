@@ -22,10 +22,13 @@
  *  - Report content  → core/fragment → lib.php fragment callback 'report'
  *  - PDF button URL  → updated client-side after every filter change
  *
- * Pagination: the fragment now returns only PERPAGE activities at a time.
- * A "Charger X activités de plus" button is appended when data-hasmore="1".
+ * Pagination: the fragment returns only PERPAGE CMs at a time.
+ * A "+" button is appended when data-hasmore="1".
  * Subsequent pages are appended to the container (not replaced).
  * The offset passed to each request = data-nextoffset from the previous page.
+ *
+ * Student selector: the native <select> is hidden and replaced by a custom
+ * searchable input + dropdown list built in vanilla JS.
  *
  * @module    report_individualized/filters
  * @copyright 2025 Ifrass
@@ -36,7 +39,7 @@ define([
     'core/ajax',
     'core/fragment',
     'core/notification',
-], function (Ajax, Fragment, Notification) {
+], function(Ajax, Fragment, Notification) {
 
     'use strict';
 
@@ -51,7 +54,7 @@ define([
     function updateSelect(select, options, selectedId) {
         isUpdatingSelects = true;
         select.innerHTML = '';
-        options.forEach(function (opt) {
+        options.forEach(function(opt) {
             const el = document.createElement('option');
             el.value = opt.id;
             el.textContent = opt.name;
@@ -67,7 +70,7 @@ define([
      * Collect current filter values from the DOM.
      *
      * @param {HTMLSelectElement} categorySelect Category selector.
-     * @param {HTMLSelectElement} userSelect     Student selector.
+     * @param {HTMLSelectElement} userSelect     Student selector (hidden native select).
      * @param {HTMLSelectElement} courseSelect   Course selector.
      * @param {HTMLInputElement}  dateFrom       Date-from input.
      * @param {HTMLInputElement}  dateTo         Date-to input.
@@ -82,7 +85,7 @@ define([
     });
 
     /**
-     * Met à jour le href du bouton PDF principal (sticky bar) avec les filtres actifs.
+     * Updates the href of the sticky PDF button with the current filter values.
      *
      * @param {object} params {userid, courseid, categoryid, datefrom, dateto}
      */
@@ -94,7 +97,6 @@ define([
             return;
         }
         pdfBtn.style.display = '';
-
         try {
             const url = new URL(pdfBtn.href, window.location.origin);
             url.searchParams.set('userid', params.userid);
@@ -111,17 +113,17 @@ define([
     /**
      * Refresh the category, student and course selects via the external function.
      *
-     * @param {number}            userid          Currently selected user ID.
-     * @param {number}            courseid        Currently selected course ID.
-     * @param {number}            categoryid      Currently selected category ID.
-     * @param {HTMLSelectElement} categorySelect  The category <select>.
-     * @param {HTMLSelectElement} userSelect      The student <select>.
-     * @param {HTMLSelectElement} courseSelect    The course <select>.
+     * @param {number}            userid         Currently selected user ID.
+     * @param {number}            courseid       Currently selected course ID.
+     * @param {number}            categoryid     Currently selected category ID.
+     * @param {HTMLSelectElement} categorySelect The category <select>.
+     * @param {HTMLSelectElement} userSelect     The student <select>.
+     * @param {HTMLSelectElement} courseSelect   The course <select>.
      */
     const refreshFilters = (userid, courseid, categoryid, categorySelect, userSelect, courseSelect) => {
         Ajax.call([{
             methodname: 'report_individualized_get_filter_options',
-            args: { userid, courseid, categoryid },
+            args: {userid, courseid, categoryid},
             done: (data) => {
                 updateSelect(categorySelect, data.categories, categoryid);
                 updateSelect(userSelect, data.users, userid);
@@ -132,7 +134,7 @@ define([
     };
 
     /**
-     * Attach a "load more" button if the fragment signals more pages exist.
+     * Attach a "+" load-more button if the fragment signals more pages exist.
      * On click, loads the next page and appends it to the container.
      *
      * @param {number}      contextid  Moodle system context ID.
@@ -144,38 +146,32 @@ define([
         if (!wrapper || wrapper.getAttribute('data-hasmore') !== '1') {
             return;
         }
-        const totalcms   = parseInt(wrapper.getAttribute('data-totalcms'))   || 0;
         const nextoffset = parseInt(wrapper.getAttribute('data-nextoffset')) || 0;
 
         const btn = document.createElement('button');
-        btn.type        = 'button';
-        btn.className   = 'btn btn-outline-primary mt-3 mb-4 d-block mx-auto report-individualized-loadmore';
+        btn.type      = 'button';
+        btn.className = 'btn btn-outline-primary mt-3 mb-4 d-block mx-auto report-individualized-loadmore';
         btn.textContent = '+';
-
         container.appendChild(btn);
 
         btn.addEventListener('click', function() {
-            btn.disabled    = true;
+            btn.disabled = true;
 
-            const nextParams = Object.assign({}, baseParams, { offset: String(nextoffset) });
+            const nextParams = Object.assign({}, baseParams, {offset: String(nextoffset)});
 
             Fragment.loadFragment('report_individualized', 'report', contextid, nextParams)
                 .then(function(html) {
                     btn.remove();
 
-                    // Parse the new page into a temporary node.
-                    const tempDiv  = document.createElement('div');
+                    const tempDiv    = document.createElement('div');
                     tempDiv.innerHTML = html;
                     const newWrapper = tempDiv.querySelector('.report-individualized-paginated');
                     const source     = newWrapper || tempDiv;
 
-                    // Append the new page's children to the container.
                     while (source.firstChild) {
                         container.appendChild(source.firstChild);
                     }
 
-                    // Check if yet another page exists and update the wrapper's
-                    // data attributes so attachLoadMore can read the new state.
                     if (newWrapper && newWrapper.getAttribute('data-hasmore') === '1') {
                         wrapper.setAttribute('data-hasmore',    '1');
                         wrapper.setAttribute('data-totalcms',   newWrapper.getAttribute('data-totalcms'));
@@ -224,6 +220,110 @@ define([
             });
     }
 
+    /**
+     * Replace the native student <select> with a custom searchable combobox.
+     * The native select is hidden but stays in the DOM as the source of truth.
+     * Typing in the input filters the visible list in real time.
+     * Clicking an item sets the native select value and triggers handleChange.
+     *
+     * @param {HTMLSelectElement} userSelect    The native student select element.
+     * @param {string}            placeholder   Translated placeholder string from PHP.
+     * @param {Function}          handleChange  Callback to fire on selection.
+     */
+    function initUserSearch(userSelect, placeholder, handleChange) {
+        userSelect.style.display = 'none';
+
+        const allOptions = Array.from(userSelect.options).map(function(o) {
+            return {value: o.value, text: o.textContent};
+        });
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'report-individualized-user-search-wrapper position-relative me-3';
+        wrapper.style.minWidth = '200px';
+
+        const searchInput = document.createElement('input');
+        searchInput.type        = 'text';
+        searchInput.placeholder = placeholder;
+        searchInput.className   = 'form-control report-individualized-user-search';
+        searchInput.autocomplete = 'off';
+
+        const listbox = document.createElement('ul');
+        listbox.className = 'report-individualized-user-listbox list-unstyled border rounded bg-white position-absolute w-100 mb-0 d-none';
+        listbox.style.maxHeight = '220px';
+        listbox.style.overflowY = 'auto';
+        listbox.style.zIndex    = '1050';
+        listbox.style.top       = '100%';
+        listbox.style.left      = '0';
+
+        wrapper.appendChild(searchInput);
+        wrapper.appendChild(listbox);
+        userSelect.parentNode.insertBefore(wrapper, userSelect);
+
+        /**
+         * Rebuild the visible listbox, filtering by query string.
+         *
+         * @param {string} query Search string entered by the user.
+         */
+        function renderList(query) {
+            listbox.innerHTML = '';
+            allOptions.forEach(function(opt) {
+                if (query && opt.value !== '0' && !opt.text.toLowerCase().includes(query.toLowerCase())) {
+                    return;
+                }
+                const li = document.createElement('li');
+                li.textContent    = opt.text;
+                li.dataset.value  = opt.value;
+                li.className      = 'px-3 py-1 report-individualized-user-option';
+                li.style.cursor   = 'pointer';
+                li.addEventListener('mouseenter', function() {
+                    li.style.backgroundColor = 'var(--bs-primary)';
+                    li.style.color = 'white';
+                });
+                li.addEventListener('mouseleave', function() {
+                    li.style.backgroundColor = '';
+                    li.style.color = '';
+                });
+                li.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    searchInput.value  = opt.value === '0' ? '' : opt.text;
+                    userSelect.value   = opt.value;
+                    listbox.classList.add('d-none');
+                    handleChange();
+                });
+                listbox.appendChild(li);
+            });
+        }
+
+        searchInput.addEventListener('focus', function() {
+            renderList(searchInput.value);
+            listbox.classList.remove('d-none');
+        });
+
+        searchInput.addEventListener('input', function() {
+            renderList(searchInput.value);
+            listbox.classList.remove('d-none');
+        });
+
+        searchInput.addEventListener('blur', function() {
+            listbox.classList.add('d-none');
+        });
+
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter') {
+                return;
+            }
+            e.preventDefault();
+            const first = listbox.querySelector('li');
+            if (!first) {
+                return;
+            }
+            searchInput.value = first.dataset.value === '0' ? '' : first.textContent;
+            userSelect.value  = first.dataset.value;
+            listbox.classList.add('d-none');
+            handleChange();
+        });
+    }
+
     let isUpdatingSelects = false;
     let currentRequestId  = 0;
     let debounceTimer     = null;
@@ -232,9 +332,10 @@ define([
      * Initialise the AJAX filter behaviour.
      * Called by index.php via $PAGE->requires->js_call_amd().
      *
-     * @param {number} contextid  Moodle system context ID.
+     * @param {number} contextid   Moodle system context ID.
+     * @param {string} placeholder Translated placeholder for the student search input.
      */
-    function init(contextid) {
+    function init(contextid, placeholder) {
         const categorySelect = document.getElementById('categoryid');
         const userSelect     = document.getElementById('userid');
         const courseSelect   = document.getElementById('courseid');
@@ -253,8 +354,8 @@ define([
         }
 
         /**
-         * Déclenché à chaque changement de filtre.
-         * Attend 300 ms avant de lancer la requête (debounce).
+         * Fired on every filter change after a 300 ms debounce.
+         * Increments the request ID to discard stale responses.
          */
         function handleChange() {
             if (isUpdatingSelects) {
@@ -274,13 +375,13 @@ define([
             }, 300);
         }
 
+        initUserSearch(userSelect, placeholder, handleChange);
+
         categorySelect.addEventListener('change', handleChange);
-        userSelect.addEventListener('change', handleChange);
         courseSelect.addEventListener('change', handleChange);
 
-        // Auto-trigger on page load only when at least one filter is already set
-        // (e.g. userid in URL from a bookmarked link). When no filter is active,
-        // the PHP-rendered placeholder stays in the container instead.
+        // Auto-trigger on page load only when at least one filter is already set.
+        // When no filter is active, the PHP-rendered placeholder stays in the container.
         const initialParams = getParams(categorySelect, userSelect, courseSelect, dateFrom, dateTo);
         const hasFilter = initialParams.userid > 0 || initialParams.courseid > 0 ||
             initialParams.categoryid > 0 || initialParams.datefrom !== '' || initialParams.dateto !== '';
@@ -303,12 +404,16 @@ define([
                 e.preventDefault();
                 categorySelect.value = '0';
                 userSelect.value     = '0';
+                const userSearchInput = document.querySelector('.report-individualized-user-search');
+                if (userSearchInput) {
+                    userSearchInput.value = '';
+                }
                 courseSelect.value   = '0';
                 if (dateFrom) { dateFrom.value = ''; }
                 if (dateTo)   { dateTo.value   = ''; }
-                container.innerHTML = '';
+                container.innerHTML  = '';
             });
         }
     }
-    return { init };
+    return {init};
 });

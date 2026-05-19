@@ -18,14 +18,14 @@
  * Plugin version and other meta-data.
  *
  * @package   report_individualized
- * @copyright 2025 Ifrass
+ * @copyright 2026 Ifrass
  * @license   https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
 // Version du plugin au format AAAAMMJJXX (XX = incrément du jour).
-$plugin->version   = 2026051813;
+$plugin->version   = 2026051910;
 
 // Version minimale de Moodle requise (2025100600 = Moodle 5.1).
 $plugin->requires  = 2025100600;
