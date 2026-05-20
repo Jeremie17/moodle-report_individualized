@@ -198,8 +198,25 @@ define([
      * @param {object}      params    {userid, courseid, categoryid, datefrom, dateto}
      * @param {number}      requestId Snapshot of currentRequestId at call time.
      */
-    function loadReport(contextid, container, params, requestId) {
-        container.classList.add('report-individualized-loading');
+    function loadReport(contextid, container, params, requestId, loadingText) {
+    container.classList.add('report-individualized-loading');
+
+    const spinnerWrapper = document.createElement('div');
+    spinnerWrapper.className = 'report-individualized-spinner d-flex flex-column align-items-center py-5';
+
+    const spinner = document.createElement('div');
+    spinner.className = 'spinner-border text-primary mb-3';
+    spinner.setAttribute('role', 'status');
+    spinner.setAttribute('aria-hidden', 'true');
+
+    const spinnerText = document.createElement('p');
+    spinnerText.className = 'text-muted';
+    spinnerText.textContent = loadingText || '';
+
+    spinnerWrapper.appendChild(spinner);
+    spinnerWrapper.appendChild(spinnerText);
+    container.innerHTML = '';
+    container.appendChild(spinnerWrapper);
 
         Fragment.loadFragment('report_individualized', 'report', contextid, params)
             .then(function (html) {
@@ -326,7 +343,7 @@ define([
      * @param {number} contextid   Moodle system context ID.
      * @param {string} placeholder Translated placeholder for the student search input.
      */
-    function init(contextid, placeholder) {
+    function init(contextid, placeholder, loadingText) {
         const categorySelect = document.getElementById('categoryid');
         const userSelect = document.getElementById('userid');
         const courseSelect = document.getElementById('courseid');
@@ -358,7 +375,7 @@ define([
                 const requestId = currentRequestId;
                 const params = getParams(categorySelect, userSelect, courseSelect, dateFrom, dateTo);
                 updatePdfUrl(params);
-                loadReport(contextid, container, params, requestId);
+                loadReport(contextid, container, params, requestId, loadingText);
                 refreshFilters(
                     params.userid, params.courseid, params.categoryid,
                     categorySelect, userSelect, courseSelect
@@ -380,7 +397,7 @@ define([
             currentRequestId++;
             const initRequestId = currentRequestId;
             updatePdfUrl(initialParams);
-            loadReport(contextid, container, initialParams, initRequestId);
+            loadReport(contextid, container, initialParams, initRequestId, loadingText);
         }
 
         if (applyBtn) {

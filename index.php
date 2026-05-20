@@ -124,6 +124,7 @@ echo $OUTPUT->heading(get_string('pluginname', 'report_individualized'));
 $PAGE->requires->js_call_amd('report_individualized/filters', 'init', [
     $context->id,
     get_string('selectlearner', 'report_individualized'),
+    get_string('loadingreport', 'report_individualized'),
 ]);
 
 $pdfurl = new moodle_url('/report/individualized/export_pdf.php', [

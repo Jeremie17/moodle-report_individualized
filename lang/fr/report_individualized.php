@@ -50,6 +50,7 @@ $string['feedback'] = 'Feedback';
 $string['generatedon'] = 'Généré le';
 $string['grade'] = 'Note';
 $string['individualized:view'] = 'Voir le rapport individualisé apprenant';
+$string['loadingreport'] = 'Chargement en cours des tableaux, veuillez patienter…';
 $string['noenrolments'] = 'Cet apprenant n\'est inscrit à aucun cours.';
 $string['opendate'] = 'Trace d\'ouverture';
 $string['pluginname'] = 'Rapport individualisé apprenant';

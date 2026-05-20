@@ -50,6 +50,7 @@ $string['feedback'] = 'Feedback';
 $string['generatedon'] = 'Generated on';
 $string['grade'] = 'Grade';
 $string['individualized:view'] = 'View individualized learner report';
+$string['loadingreport'] = 'Loading tables, please wait…';
 $string['noenrolments'] = 'This learner is not enrolled in any course.';
 $string['opendate'] = 'Opening trace';
 $string['pluginname'] = 'Individualized learner report';
