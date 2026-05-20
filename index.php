@@ -167,7 +167,7 @@ echo html_writer::tag(
     get_string('selectuser', 'report_individualized'),
     ['for' => 'userid', 'class' => 'mb-0']
 );
-$useroptions = [0 => get_string('allusers', 'report_individualized')];
+$useroptions = [0 => get_string('selectlearner', 'report_individualized')];
 foreach ($allusers as $u) {
     $useroptions[$u->id] = fullname($u);
 }

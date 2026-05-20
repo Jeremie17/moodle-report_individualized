@@ -39,7 +39,7 @@ define([
     'core/ajax',
     'core/fragment',
     'core/notification',
-], function(Ajax, Fragment, Notification) {
+], function (Ajax, Fragment, Notification) {
 
     'use strict';
 
@@ -54,7 +54,7 @@ define([
     function updateSelect(select, options, selectedId) {
         isUpdatingSelects = true;
         select.innerHTML = '';
-        options.forEach(function(opt) {
+        options.forEach(function (opt) {
             const el = document.createElement('option');
             el.value = opt.id;
             el.textContent = opt.name;
@@ -123,7 +123,7 @@ define([
     const refreshFilters = (userid, courseid, categoryid, categorySelect, userSelect, courseSelect) => {
         Ajax.call([{
             methodname: 'report_individualized_get_filter_options',
-            args: {userid, courseid, categoryid},
+            args: { userid, courseid, categoryid },
             done: (data) => {
                 updateSelect(categorySelect, data.categories, categoryid);
                 updateSelect(userSelect, data.users, userid);
@@ -149,40 +149,40 @@ define([
         const nextoffset = parseInt(wrapper.getAttribute('data-nextoffset')) || 0;
 
         const btn = document.createElement('button');
-        btn.type      = 'button';
+        btn.type = 'button';
         btn.className = 'btn btn-outline-primary mt-3 mb-4 d-block mx-auto report-individualized-loadmore';
         btn.textContent = '+';
         container.appendChild(btn);
 
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             btn.disabled = true;
 
-            const nextParams = Object.assign({}, baseParams, {offset: String(nextoffset)});
+            const nextParams = Object.assign({}, baseParams, { offset: String(nextoffset) });
 
             Fragment.loadFragment('report_individualized', 'report', contextid, nextParams)
-                .then(function(html) {
+                .then(function (html) {
                     btn.remove();
 
-                    const tempDiv    = document.createElement('div');
+                    const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = html;
                     const newWrapper = tempDiv.querySelector('.report-individualized-paginated');
-                    const source     = newWrapper || tempDiv;
+                    const source = newWrapper || tempDiv;
 
                     while (source.firstChild) {
                         container.appendChild(source.firstChild);
                     }
 
                     if (newWrapper && newWrapper.getAttribute('data-hasmore') === '1') {
-                        wrapper.setAttribute('data-hasmore',    '1');
-                        wrapper.setAttribute('data-totalcms',   newWrapper.getAttribute('data-totalcms'));
+                        wrapper.setAttribute('data-hasmore', '1');
+                        wrapper.setAttribute('data-totalcms', newWrapper.getAttribute('data-totalcms'));
                         wrapper.setAttribute('data-nextoffset', newWrapper.getAttribute('data-nextoffset'));
                         attachLoadMore(contextid, container, baseParams);
                     }
 
                     return;
                 })
-                .catch(function(err) {
-                    btn.disabled    = false;
+                .catch(function (err) {
+                    btn.disabled = false;
                     btn.textContent = '+';
                     Notification.exception(err);
                 });
@@ -202,7 +202,7 @@ define([
         container.classList.add('report-individualized-loading');
 
         Fragment.loadFragment('report_individualized', 'report', contextid, params)
-            .then(function(html) {
+            .then(function (html) {
                 if (requestId !== currentRequestId) {
                     return;
                 }
@@ -211,7 +211,7 @@ define([
                 attachLoadMore(contextid, container, params);
                 return;
             })
-            .catch(function(err) {
+            .catch(function (err) {
                 if (requestId !== currentRequestId) {
                     return;
                 }
@@ -233,27 +233,21 @@ define([
     function initUserSearch(userSelect, placeholder, handleChange) {
         userSelect.style.display = 'none';
 
-        const allOptions = Array.from(userSelect.options).map(function(o) {
-            return {value: o.value, text: o.textContent};
+        const allOptions = Array.from(userSelect.options).map(function (o) {
+            return { value: o.value, text: o.textContent };
         });
 
         const wrapper = document.createElement('div');
         wrapper.className = 'report-individualized-user-search-wrapper position-relative me-3';
-        wrapper.style.minWidth = '200px';
 
         const searchInput = document.createElement('input');
-        searchInput.type        = 'text';
+        searchInput.type = 'text';
         searchInput.placeholder = placeholder;
-        searchInput.className   = 'form-control report-individualized-user-search';
+        searchInput.className = 'form-control report-individualized-user-search';
         searchInput.autocomplete = 'off';
 
         const listbox = document.createElement('ul');
         listbox.className = 'report-individualized-user-listbox list-unstyled border rounded bg-white position-absolute w-100 mb-0 d-none';
-        listbox.style.maxHeight = '220px';
-        listbox.style.overflowY = 'auto';
-        listbox.style.zIndex    = '1050';
-        listbox.style.top       = '100%';
-        listbox.style.left      = '0';
 
         wrapper.appendChild(searchInput);
         wrapper.appendChild(listbox);
@@ -266,27 +260,24 @@ define([
          */
         function renderList(query) {
             listbox.innerHTML = '';
-            allOptions.forEach(function(opt) {
+            allOptions.forEach(function (opt) {
                 if (query && opt.value !== '0' && !opt.text.toLowerCase().includes(query.toLowerCase())) {
                     return;
                 }
                 const li = document.createElement('li');
-                li.textContent    = opt.text;
-                li.dataset.value  = opt.value;
-                li.className      = 'px-3 py-1 report-individualized-user-option';
-                li.style.cursor   = 'pointer';
-                li.addEventListener('mouseenter', function() {
-                    li.style.backgroundColor = 'var(--bs-primary)';
-                    li.style.color = 'white';
+                li.textContent = opt.text;
+                li.dataset.value = opt.value;
+                li.className = 'px-3 py-1 report-individualized-user-option';
+                li.addEventListener('mouseenter', function () {
+                    li.classList.add('report-individualized-user-option--hover');
                 });
-                li.addEventListener('mouseleave', function() {
-                    li.style.backgroundColor = '';
-                    li.style.color = '';
+                li.addEventListener('mouseleave', function () {
+                    li.classList.remove('report-individualized-user-option--hover');
                 });
-                li.addEventListener('mousedown', function(e) {
+                li.addEventListener('mousedown', function (e) {
                     e.preventDefault();
-                    searchInput.value  = opt.value === '0' ? '' : opt.text;
-                    userSelect.value   = opt.value;
+                    searchInput.value = opt.value === '0' ? '' : opt.text;
+                    userSelect.value = opt.value;
                     listbox.classList.add('d-none');
                     handleChange();
                 });
@@ -294,21 +285,21 @@ define([
             });
         }
 
-        searchInput.addEventListener('focus', function() {
+        searchInput.addEventListener('focus', function () {
             renderList(searchInput.value);
             listbox.classList.remove('d-none');
         });
 
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function () {
             renderList(searchInput.value);
             listbox.classList.remove('d-none');
         });
 
-        searchInput.addEventListener('blur', function() {
+        searchInput.addEventListener('blur', function () {
             listbox.classList.add('d-none');
         });
 
-        searchInput.addEventListener('keydown', function(e) {
+        searchInput.addEventListener('keydown', function (e) {
             if (e.key !== 'Enter') {
                 return;
             }
@@ -318,15 +309,15 @@ define([
                 return;
             }
             searchInput.value = first.dataset.value === '0' ? '' : first.textContent;
-            userSelect.value  = first.dataset.value;
+            userSelect.value = first.dataset.value;
             listbox.classList.add('d-none');
             handleChange();
         });
     }
 
     let isUpdatingSelects = false;
-    let currentRequestId  = 0;
-    let debounceTimer     = null;
+    let currentRequestId = 0;
+    let debounceTimer = null;
 
     /**
      * Initialise the AJAX filter behaviour.
@@ -337,11 +328,11 @@ define([
      */
     function init(contextid, placeholder) {
         const categorySelect = document.getElementById('categoryid');
-        const userSelect     = document.getElementById('userid');
-        const courseSelect   = document.getElementById('courseid');
-        const dateFrom       = document.getElementById('datefrom');
-        const dateTo         = document.getElementById('dateto');
-        const applyBtn       = document.querySelector(
+        const userSelect = document.getElementById('userid');
+        const courseSelect = document.getElementById('courseid');
+        const dateFrom = document.getElementById('datefrom');
+        const dateTo = document.getElementById('dateto');
+        const applyBtn = document.querySelector(
             '.report-individualized-filters form button[type="submit"]'
         );
         const resetLink = document.querySelector(
@@ -362,10 +353,10 @@ define([
                 return;
             }
             clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(function() {
+            debounceTimer = setTimeout(function () {
                 currentRequestId++;
                 const requestId = currentRequestId;
-                const params    = getParams(categorySelect, userSelect, courseSelect, dateFrom, dateTo);
+                const params = getParams(categorySelect, userSelect, courseSelect, dateFrom, dateTo);
                 updatePdfUrl(params);
                 loadReport(contextid, container, params, requestId);
                 refreshFilters(
@@ -393,27 +384,27 @@ define([
         }
 
         if (applyBtn) {
-            applyBtn.addEventListener('click', function(e) {
+            applyBtn.addEventListener('click', function (e) {
                 e.preventDefault();
                 handleChange();
             });
         }
 
         if (resetLink) {
-            resetLink.addEventListener('click', function(e) {
+            resetLink.addEventListener('click', function (e) {
                 e.preventDefault();
                 categorySelect.value = '0';
-                userSelect.value     = '0';
+                userSelect.value = '0';
                 const userSearchInput = document.querySelector('.report-individualized-user-search');
                 if (userSearchInput) {
                     userSearchInput.value = '';
                 }
-                courseSelect.value   = '0';
+                courseSelect.value = '0';
                 if (dateFrom) { dateFrom.value = ''; }
-                if (dateTo)   { dateTo.value   = ''; }
-                container.innerHTML  = '';
+                if (dateTo) { dateTo.value = ''; }
+                container.innerHTML = '';
             });
         }
     }
-    return {init};
+    return { init };
 });

@@ -85,7 +85,7 @@ class report_fragment
         $datefromstr = isset($args['datefrom']) ? clean_param($args['datefrom'], PARAM_ALPHANUMEXT) : '';
         $datetostr = isset($args['dateto']) ? clean_param($args['dateto'], PARAM_ALPHANUMEXT) : '';
         $offset = isset($args['offset']) ? clean_param($args['offset'], PARAM_INT) : 0;
-        $perpage     = 30;
+        $perpage     = 20;
 
         $datefrom = 0;
         $dateto   = 0;
